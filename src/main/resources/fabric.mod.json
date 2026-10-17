@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "reelassist",
+	"version": "${version}",
+	"name": "Reel Assist",
+	"description": "낚시 종합 보조 모드 — 입질 알림, 낚시 통계 HUD, 자동 낚시 매크로.\nMade by seolwoni",
+	"authors": [
+		"seolwoni"
+	],
+	"license": "All-Rights-Reserved",
+	"icon": "assets/reelassist/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.seolwoni.reelassist.ReelAssistClient"
+		],
+		"modmenu": [
+			"com.seolwoni.reelassist.compat.ModMenuIntegration"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"modmenu": "*"
+	}
+}
