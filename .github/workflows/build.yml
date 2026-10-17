@@ -29,7 +29,13 @@ jobs:
           git rm -rf --cached . > /dev/null
           grep -E "error:|warning:|\.java:[0-9]+|What went wrong|^> |Caused by|Exception" build.log | head -400 > errors.txt || true
           tail -300 build.log > tail.txt
-          git add errors.txt tail.txt
+          grep -A6 "error:" build.log | head -300 > compile.txt || true
+          JAR=$(find ~/.gradle .gradle -name "minecraft-*.jar" -size +5M 2>/dev/null | grep -v sources | head -1)
+          echo "jar: $JAR" > sigs.txt
+          for c in net.minecraft.client.multiplayer.MultiPlayerGameMode net.minecraft.world.inventory.ContainerInput net.minecraft.world.entity.projectile.FishingHook; do
+            javap -p -cp "$JAR" $c >> sigs.txt 2>&1 || true
+          done
+          git add errors.txt tail.txt compile.txt sigs.txt
           git commit -m "build log ${{ github.run_number }}"
           git push -f origin ci-log
       - uses: actions/upload-artifact@v4
