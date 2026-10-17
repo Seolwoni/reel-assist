@@ -17,7 +17,21 @@ jobs:
           distribution: 'microsoft'
       - run: chmod +x ./gradlew
       - name: build
-        run: ./gradlew build --stacktrace
+        run: |
+          set -o pipefail
+          ./gradlew build --stacktrace 2>&1 | tee build.log
+      - name: save log on failure
+        if: failure()
+        run: |
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan ci-log
+          git rm -rf --cached . > /dev/null
+          grep -E "error:|warning:|\.java:[0-9]+|What went wrong|^> |Caused by|Exception" build.log | head -400 > errors.txt || true
+          tail -300 build.log > tail.txt
+          git add errors.txt tail.txt
+          git commit -m "build log ${{ github.run_number }}"
+          git push -f origin ci-log
       - uses: actions/upload-artifact@v4
         with:
           name: reelassist-jar
