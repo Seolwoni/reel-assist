@@ -442,7 +442,7 @@ public final class FishingController {
 			for (DiscardEntry e : cfg.discardEntries) {
 				if (e.matches(s)) {
 					int menuSlot = i < 9 ? 36 + i : i;
-					mc.gameMode.handleInventoryMouseClick(player.inventoryMenu.containerId, menuSlot, 1,
+					mc.gameMode.handleContainerInput(player.inventoryMenu.containerId, menuSlot, 1,
 							ContainerInput.THROW, player);
 					discardCooldown = 3;
 					return;
