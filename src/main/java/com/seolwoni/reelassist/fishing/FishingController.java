@@ -63,6 +63,8 @@ public final class FishingController {
 	private static float fromYaw, fromPitch, toYaw, toPitch;
 	private static int moveTick, moveLen;
 	private static int nextMoveIn;
+	/** Looking away from the bobber now and then: hold there this long, then look back. */
+	private static int awayHold = -1, nextAwayIn = -1;
 
 	private static int discardCooldown;
 
@@ -329,6 +331,7 @@ public final class FishingController {
 					return;
 				}
 				if (--timer > 0) return;
+				if (cfg.lookJitter && lookingAway(cfg)) return; // look back at the water first
 				if (player.getInventory().getFreeSlot() == -1) {
 					if (cfg.storeEnabled && ChestStorage.hasChest()) {
 						ChestStorage.start(mc, player);
@@ -454,12 +457,15 @@ public final class FishingController {
 		} else {
 			v = min + span * 0.3 + RANDOM.nextGaussian() * span * 0.15;
 		}
+		// The rhythm drifts slowly over minutes (Assist Core tempo), within the set range.
+		v = min + (v - min) * com.seolwoni.assistcore.util.Human.tempo();
 		return (int) Math.max(min, Math.min(max, Math.round(v)));
 	}
 
 	/** Re-anchor the look movement and restart the cast cycle (after a storage trip). */
 	public static void resetLook() {
 		anchored = false;
+		awayHold = -1;
 		state = State.IDLE;
 	}
 
@@ -608,19 +614,50 @@ public final class FishingController {
 			if (t >= 1f) moveLen = 0;
 			return;
 		}
+		if (awayHold > 0) {
+			awayHold--;
+			return;
+		}
+		if (awayHold == 0) {
+			// Look back at the bobber.
+			awayHold = -1;
+			startMove(cfg, (RANDOM.nextFloat() * 2 - 1) * cfg.jitterDegrees, (RANDOM.nextFloat() * 2 - 1) * cfg.jitterDegrees * 0.6f, rand(8, 16));
+			return;
+		}
 
 		// Don't start a movement right before casting.
 		if (state == State.CAST_WAIT && timer < 12) return;
+		// Now and then, while waiting for a bite, look somewhere else for a few seconds (like checking around).
+		if (nextAwayIn < 0) nextAwayIn = rand(900, 2400);
+		if (--nextAwayIn <= 0 && state == State.FISHING && ticksSinceCast > 40 && ticksSinceBite > 40) {
+			nextAwayIn = rand(900, 2400);
+			float side = (25 + RANDOM.nextFloat() * 35) * (RANDOM.nextBoolean() ? 1 : -1);
+			startMove(cfg, side, -15 + RANDOM.nextFloat() * 30, rand(10, 18));
+			awayHold = rand(30, 90);
+			return;
+		}
 		if (--nextMoveIn > 0) return;
 
 		float d = cfg.jitterDegrees;
+		startMove(cfg, (RANDOM.nextFloat() * 2 - 1) * d, (RANDOM.nextFloat() * 2 - 1) * d * 0.6f, rand(6, 14));
+	}
+
+	private static void startMove(ReelConfig cfg, float yaw, float pitch, int len) {
 		fromYaw = offYaw;
 		fromPitch = offPitch;
-		toYaw = (RANDOM.nextFloat() * 2 - 1) * d;
-		toPitch = (RANDOM.nextFloat() * 2 - 1) * d * 0.6f;
+		toYaw = yaw;
+		toPitch = pitch;
 		moveTick = 0;
-		moveLen = rand(6, 14);
+		moveLen = len;
 		nextMoveIn = rand(cfg.jitterIntervalMin * 20, cfg.jitterIntervalMax * 20);
+	}
+
+	/** True while the head is turned away from where it casts (wait with the next cast until it looks back). */
+	private static boolean lookingAway(ReelConfig cfg) {
+		if (!anchored) return false;
+		boolean away = Math.abs(offYaw) > cfg.jitterDegrees * 2 + 1 || Math.abs(offPitch) > cfg.jitterDegrees * 2 + 1;
+		if (away && moveLen == 0 && awayHold > 0) awayHold = 0; // cut the look short: time to cast
+		return away || moveLen > 0 && awayHold >= 0;
 	}
 
 	private static float clampPitch(float p) {

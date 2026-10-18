@@ -52,6 +52,13 @@ public final class Body {
 			vel *= 0.5f;
 			return true;
 		}
+		// A new target (moved a fair bit since last time): pick how this turn bends.
+		if (Math.abs(wrap(yaw - lastYaw)) + Math.abs(pitch - lastPitch) > 15f || dist > curveFrom + 15f) {
+			curve = (float) ((0.15 + Human.RANDOM.nextDouble() * 0.3) * (Human.RANDOM.nextBoolean() ? 1 : -1) * Human.liveliness());
+			curveFrom = dist;
+		}
+		lastYaw = yaw;
+		lastPitch = pitch;
 		float accel = Math.max(0.6f, turnSpeed * 0.3f);
 		// The fastest speed that can still slow down in time for the target.
 		float want = Math.min(turnSpeed, (float) Math.sqrt(2f * accel * dist));
@@ -59,10 +66,40 @@ public final class Body {
 		if (vel < want) vel = Math.min(want, vel + accel);
 		else vel = Math.max(want, vel - accel * 1.5f);
 		float step = Math.min(vel, dist);
-		float f = step / dist;
-		p.setYRot(p.getYRot() + dy * f);
-		p.setXRot(Math.max(-90f, Math.min(90f, p.getXRot() + dp * f)));
+		// Move along a gentle arc rather than a ruler-straight line: a sideways part that fades out on arrival.
+		float ux = dy / dist, uy = dp / dist;
+		float bend = dist > 4f ? curve * Math.min(1f, dist / 25f) : 0f;
+		float mx = ux - uy * bend, my = uy + ux * bend;
+		float ml = (float) Math.sqrt(mx * mx + my * my);
+		float sy = step * mx / ml, sp = step * my / ml;
+		p.setYRot(p.getYRot() + sy);
+		p.setXRot(Math.max(-90f, Math.min(90f, p.getXRot() + sp)));
 		return dist - step <= tolerance;
+	}
+
+	private static float curve, curveFrom, lastYaw, lastPitch;
+
+	// ------------------------------------------------------------------ glances
+
+	private static float glanceYaw, glancePitch;
+	private static int glanceTicks, walkGlanceIn = 200;
+
+	/**
+	 * Look a little aside (yaw offset) and up or down (absolute pitch) for a few ticks while walking on,
+	 * like glancing around. Used by {@link #walkThrough}; nothing else changes.
+	 */
+	public static void glance(float yawOffset, float pitch, int ticks) {
+		glanceYaw = yawOffset;
+		glancePitch = pitch;
+		glanceTicks = ticks;
+	}
+
+	public static boolean glancing() {
+		return glanceTicks > 0;
+	}
+
+	public static void stopGlance() {
+		glanceTicks = 0;
 	}
 
 	public static boolean lookAt(LocalPlayer p, Vec3 t, float tolerance) {
@@ -91,20 +128,99 @@ public final class Body {
 		double dx = target.x - pos.x, dz = target.z - pos.z;
 		double dist = Math.sqrt(dx * dx + dz * dz);
 		double dyFeet = feet.getY() - pos.y;
-		boolean arrived = dist < 0.22 && Math.abs(dyFeet) < 0.6;
+		boolean arrived = dist < 0.25 && Math.abs(dyFeet) < 0.6;
 		if (arrived) {
 			release(mc);
 			return true;
 		}
+		if (p.isSprinting() && dist < 2.5) {
+			mc.options.keySprint.setDown(false);
+			p.setSprinting(false);
+		}
 		float yaw = (float) (Math.toDegrees(Math.atan2(dz, dx)) - 90.0);
 		// Keep the head roughly where it is while walking, only easing out of extreme angles.
 		float pitch = Math.max(-10f, Math.min(35f, p.getXRot()));
-		turnTo(p, yaw, pitch, 1f);
-		float yawErr = Math.abs(wrap(yaw - p.getYRot()));
+		// On a longer straight walk, now and then glance aside, up or down (walking on meanwhile).
+		if (dist > 5 && glanceTicks <= 0 && --walkGlanceIn <= 0 && p.onGround()) {
+			walkGlanceIn = (int) (Human.rand(120, 320) / Human.liveliness());
+			if (Math.abs(wrap(yaw - p.getYRot())) < 15f) {
+				double r = Human.RANDOM.nextDouble();
+				glance((float) ((6 + Human.RANDOM.nextDouble() * 8) * (Human.RANDOM.nextBoolean() ? 1 : -1)),
+						r < 0.4 ? (float) (-20 + Human.RANDOM.nextDouble() * 12) : r < 0.75 ? (float) (35 + Human.RANDOM.nextDouble() * 15)
+								: (float) (Human.RANDOM.nextDouble() * 10), Human.rand(8, 16));
+			}
+		}
+		boolean glance = glanceTicks > 0 && dist > 2.0;
+		if (glance) {
+			glanceTicks--;
+			turnTo(p, yaw + glanceYaw, glancePitch, 1f);
+		} else {
+			glanceTicks = 0;
+			turnTo(p, yaw, pitch, 1f);
+		}
+		float yawErr = Math.abs(wrap(yaw + (glance ? glanceYaw : 0f) - p.getYRot()));
 		// Ease off: only push forward while facing roughly the right way, and tap it when very close.
-		boolean push = yawErr < 35f && (dist > 0.5 || walkTicks % 2 == 0);
+		// Far: walk on while turning. Close by: only small steps from (almost) standing, so it settles instead
+		// of sliding past the middle and turning round again.
+		Vec3 v = p.getDeltaMovement();
+		double speed = Math.sqrt(v.x * v.x + v.z * v.z);
+		// Let go early enough to glide to a stop near the middle (ground friction keeps about half the speed each tick).
+		double glide = speed * 1.2;
+		boolean push = dist > glide + 0.1 && yawErr < (dist > 0.5 ? 50f : 35f);
 		mc.options.keyUp.setDown(push);
-		mc.options.keyJump.setDown(dyFeet > 0.5 && p.onGround());
+		// Swim: keep the head above water (and climb out of a water hole onto the next cell).
+		mc.options.keyJump.setDown((dyFeet > 0.5 && p.onGround()) || p.isInWater());
+		return false;
+	}
+
+	/**
+	 * Walks through {@code cell} on the way to {@code next} without stopping: aims a little ahead, keeps
+	 * the forward key down and jumps up steps. Returns true once {@code cell} has been passed.
+	 */
+	public static boolean walkThrough(LocalPlayer p, BlockPos cell, BlockPos next, boolean sprint) {
+		Minecraft mc = Minecraft.getInstance();
+		walkTicks++;
+		Vec3 pos = p.position();
+		double cx = cell.getX() + 0.5, cz = cell.getZ() + 0.5;
+		double rx = pos.x - cx, rz = pos.z - cz;
+		double dist = Math.sqrt(rx * rx + rz * rz);
+		double dyFeet = cell.getY() - pos.y;
+		if (Math.abs(dyFeet) < 0.6) {
+			if (dist < 0.55) return true;
+			// Already past the cell on the way to the next one (cutting a corner a little is fine).
+			double nx = next.getX() + 0.5 - cx, nz = next.getZ() + 0.5 - cz;
+			double nl = Math.sqrt(nx * nx + nz * nz);
+			if (nl > 0.01) {
+				double along = (rx * nx + rz * nz) / nl;
+				double side = Math.abs(rx * nz - rz * nx) / nl;
+				if (along > -0.05 && side < 0.45 && dist < 1.2) return true;
+			}
+		}
+		// Look ahead: once close, already steer towards the next cell.
+		double tx = cx, tz = cz;
+		if (dist < 0.9) {
+			tx = cx + (next.getX() + 0.5 - cx) * 0.6;
+			tz = cz + (next.getZ() + 0.5 - cz) * 0.6;
+		}
+		float yaw = (float) (Math.toDegrees(Math.atan2(tz - pos.z, tx - pos.x)) - 90.0);
+		float pitch = Math.max(-10f, Math.min(30f, p.getXRot()));
+		boolean glance = glanceTicks > 0;
+		if (glance) {
+			glanceTicks--;
+			turnTo(p, yaw + glanceYaw, glancePitch, 1f);
+		} else {
+			turnTo(p, yaw, pitch, 1f);
+		}
+		// While glancing the head is off the way on purpose: keep walking on.
+		float yawErr = Math.abs(wrap(yaw + (glance ? glanceYaw : 0f) - p.getYRot()));
+		// Keep walking while turning a corner, like a person does (only stop for a sharp turn).
+		// (close to the cell only when facing it, or it would circle round it).
+		mc.options.keyUp.setDown(yawErr < (dist > 2.0 ? 75f : dist > 1.0 ? 45f : 30f));
+		boolean run = sprint && !glance && yawErr < 20f && p.getFoodData().getFoodLevel() > 6;
+		mc.options.keySprint.setDown(run);
+		if (!run && p.isSprinting()) p.setSprinting(false);
+		// Swim: keep the head above water (and climb out of a water hole onto the next cell).
+		mc.options.keyJump.setDown((dyFeet > 0.5 && p.onGround()) || p.isInWater());
 		return false;
 	}
 
@@ -112,5 +228,7 @@ public final class Body {
 		mc.options.keyUp.setDown(false);
 		mc.options.keyJump.setDown(false);
 		mc.options.keyAttack.setDown(false);
+		mc.options.keySprint.setDown(false);
+		if (mc.player != null) mc.player.setSprinting(false);
 	}
 }
