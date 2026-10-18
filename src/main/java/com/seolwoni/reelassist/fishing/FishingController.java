@@ -95,6 +95,8 @@ public final class FishingController {
 		if (cfg.macroEnabled) {
 			if (ChestStorage.active()) {
 				ChestStorage.tick(mc, player, hookAlive);
+			} else if (AutoEat.active()) {
+				AutoEat.tick(mc, player);
 			} else {
 				runMacro(mc, player, hookAlive, biting, cfg);
 				lookMovement(player, cfg);
@@ -104,6 +106,7 @@ public final class FishingController {
 			state = State.IDLE;
 			anchored = false;
 			ChestStorage.cancel();
+			AutoEat.cancel();
 		}
 		rememberHand(player);
 	}
@@ -301,6 +304,7 @@ public final class FishingController {
 					}
 					return;
 				}
+				if (AutoEat.tryStart(player)) return;
 				if (!prepareRod(player, cfg)) return;
 				use(mc, player);
 				ticksSinceCast = 0;
@@ -382,6 +386,7 @@ public final class FishingController {
 		cfg.macroEnabled = false;
 		ReelConfig.save();
 		ChestStorage.cancel();
+		AutoEat.cancel();
 		state = State.IDLE;
 		anchored = false;
 		if (alert) {
@@ -550,6 +555,7 @@ public final class FishingController {
 	public static String stateLabel() {
 		if (!ReelConfig.get().macroEnabled) return "꺼짐";
 		if (ChestStorage.active()) return ChestStorage.label();
+		if (AutoEat.active()) return AutoEat.label();
 		return switch (state) {
 			case IDLE, CAST_WAIT -> "던지는 중";
 			case FISHING -> "기다리는 중";

@@ -141,9 +141,17 @@ public class ReelConfigScreen extends Screen {
 			c.protectDurability = v;
 			ReelConfig.save();
 		}));
+		y += ROW;
+		toggle(left, y, 150, "자동 밥", () -> c.autoEat, v -> c.autoEat = v);
+		add(new IntSlider(right, y, 150, "배고픔 기준", "/20", 1, 19, c.eatThreshold, v -> {
+			c.eatThreshold = v;
+			ReelConfig.save();
+		}));
+		y += ROW;
+		toggle(left, y, 150, "날생선도 먹기", () -> c.eatRawFish, v -> c.eatRawFish = v);
 		y += ROW + 4;
-		note("게임 안에서 낚싯대를 들고 Shift + 좌클릭으로도 모드를 바꿀 수 있어요.", y);
-		note("핫바 모드는 내구도가 적은 낚싯대부터 사용해요.", y + 12);
+		note("낚싯대를 들고 Shift + 좌클릭으로도 모드를 바꿀 수 있어요. 핫바 모드는 내구도 적은 것부터.", y);
+		note("자동 밥: 핫바의 음식 중 배부른 것부터 먹어요. 썩은 살점·복어·황금 사과 등은 제외.", y + 12);
 	}
 
 	private Component rodText() {

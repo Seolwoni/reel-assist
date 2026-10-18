@@ -40,6 +40,12 @@ public class ReelConfig {
 	/** Human-like delay spread (clustered, occasional slow) instead of flat random. */
 	public boolean humanDelay = true;
 
+	// ---- Auto eat ----
+	public boolean autoEat = true;
+	/** Eat when the hunger bar is at or below this (0..20). */
+	public int eatThreshold = 14;
+	public boolean eatRawFish = true;
+
 	// ---- Chest storage ----
 	public boolean storeEnabled = true;
 	public boolean chestSet = false;
