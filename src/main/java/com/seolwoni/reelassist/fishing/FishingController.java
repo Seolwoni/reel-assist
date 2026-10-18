@@ -392,7 +392,7 @@ public final class FishingController {
 	/** True once the bobber has clearly settled somewhere other than water. */
 	private static boolean checkGrounded(FishingHook hook) {
 		if (hook == null) return false;
-		if (hook.isInWater()) {
+		if (hook.getHookedIn() == null && nearWater(hook)) {
 			groundTicks = 0;
 			groundFails = 0;
 			return false;
@@ -406,6 +406,19 @@ public final class FishingController {
 		if (groundTicks >= 10) {
 			groundTicks = 0;
 			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * The bobber floats on the surface, so its own "in water" flag flickers off.
+	 * Instead look for water in the block it is in or the blocks just below it.
+	 */
+	private static boolean nearWater(FishingHook hook) {
+		if (hook.isInWater()) return true;
+		net.minecraft.core.BlockPos pos = hook.blockPosition();
+		for (int dy = 0; dy >= -2; dy--) {
+			if (hook.level().getFluidState(pos.offset(0, dy, 0)).is(net.minecraft.tags.FluidTags.WATER)) return true;
 		}
 		return false;
 	}
