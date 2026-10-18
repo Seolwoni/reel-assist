@@ -50,13 +50,19 @@ public class ReelConfigScreen extends Screen {
 		int left = cx - 155;
 		int right = cx + 5;
 
-		// ---- Macro toggle, always on top ----
-		addRenderableWidget(Button.builder(macroText(), b -> {
+		// ---- Master switch + macro toggle, always on top ----
+		addRenderableWidget(Button.builder(toggleText("모드 전체", cfg().modEnabled), b -> {
+			FishingController.setModEnabled(!cfg().modEnabled);
+			rebuildWidgets();
+		}).bounds(left, 22, 150, 20).build());
+		Button macro = Button.builder(macroText(), b -> {
 			cfg().macroEnabled = !cfg().macroEnabled;
 			FishingController.onMacroToggled(cfg().macroEnabled);
 			ReelConfig.save();
 			b.setMessage(macroText());
-		}).bounds(left, 22, 310, 20).build());
+		}).bounds(right, 22, 150, 20).build();
+		macro.active = cfg().modEnabled;
+		addRenderableWidget(macro);
 
 		// ---- Tabs ----
 		// Two rows of tabs: 5 on top, 4 below.

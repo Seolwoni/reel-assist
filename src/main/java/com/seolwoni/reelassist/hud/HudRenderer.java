@@ -42,6 +42,7 @@ public final class HudRenderer {
 		if (mc.player == null) return;
 		if (mc.gui.screen() instanceof HudEditScreen) return;
 		ReelConfig cfg = ReelConfig.get();
+		if (!cfg.modEnabled) return;
 		if (cfg.trackerEnabled) draw(g, Element.TRACKER, false);
 		if (cfg.statusEnabled) draw(g, Element.STATUS, false);
 	}

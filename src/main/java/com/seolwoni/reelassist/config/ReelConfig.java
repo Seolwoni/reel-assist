@@ -21,6 +21,9 @@ public class ReelConfig {
 
 	private static ReelConfig instance = new ReelConfig();
 
+	/** Master switch: when off the whole mod does nothing except show its settings. */
+	public boolean modEnabled = true;
+
 	// ---- Macro ----
 	public boolean macroEnabled = false;
 	/** Ticks to wait after a bite before reeling in. Capped so the fish is never lost. */

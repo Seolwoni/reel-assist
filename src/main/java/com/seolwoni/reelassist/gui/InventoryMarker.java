@@ -46,6 +46,7 @@ public final class InventoryMarker {
 	}
 
 	public static void onKey(Screen screen, KeyEvent event) {
+		if (!ReelConfig.get().modEnabled) return;
 		if (!(screen instanceof AbstractContainerScreen<?> acs)) return;
 		boolean discard = ReelAssistClient.markDiscardKey.matches(event);
 		boolean goal = ReelAssistClient.markGoalKey.matches(event);
@@ -110,6 +111,7 @@ public final class InventoryMarker {
 	public static void drawMarks(Screen screen, GuiGraphicsExtractor g) {
 		if (!(screen instanceof AbstractContainerScreen<?> acs)) return;
 		ReelConfig cfg = ReelConfig.get();
+		if (!cfg.modEnabled) return;
 		if (cfg.discardEntries.isEmpty()) return;
 		lookup();
 		if (leftPosField == null || topPosField == null) return;

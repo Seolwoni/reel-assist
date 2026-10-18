@@ -53,7 +53,9 @@ public class ReelAssistClient implements ClientModInitializer {
 				"key.reelassist.mark_goal", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, category));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while (markChestKey.consumeClick()) ChestStorage.markLookedAt(client);
+			while (markChestKey.consumeClick()) {
+				if (ReelConfig.get().modEnabled) ChestStorage.markLookedAt(client);
+			}
 			FishingController.tick(client);
 		});
 
@@ -61,7 +63,7 @@ public class ReelAssistClient implements ClientModInitializer {
 
 		// Shift + left click with a rod cycles the rod mode instead of attacking.
 		ClientPreAttackCallback.EVENT.register((client, player, clickCount) -> {
-			if (player.isShiftKeyDown() && player.getMainHandItem().is(Items.FISHING_ROD)) {
+			if (ReelConfig.get().modEnabled && player.isShiftKeyDown() && player.getMainHandItem().is(Items.FISHING_ROD)) {
 				if (clickCount > 0) FishingController.cycleRodMode();
 				return true;
 			}

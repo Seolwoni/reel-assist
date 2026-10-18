@@ -44,7 +44,8 @@ public final class BobberFx {
 	}
 
 	public static boolean shouldGlow(Entity e) {
-		return ReelConfig.get().bobberGlow && isOwnHook(e);
+		ReelConfig cfg = ReelConfig.get();
+		return cfg.modEnabled && cfg.bobberGlow && isOwnHook(e);
 	}
 
 	public static int color() {
@@ -73,6 +74,7 @@ public final class BobberFx {
 
 	/** Called on the main thread for every particle packet. */
 	public static void onParticle(ClientboundLevelParticlesPacket packet) {
+		if (!ReelConfig.get().modEnabled) return;
 		if (packet.getParticle().getType() != ParticleTypes.FISHING) return;
 		FishingHook hook = ownHook();
 		if (hook == null || biting) return;

@@ -78,6 +78,7 @@ public final class FishingController {
 			return;
 		}
 		if (mc.isPaused()) return;
+		if (!ReelConfig.get().modEnabled) return;
 
 		ReelConfig cfg = ReelConfig.get();
 		FishingHook hook = player.fishing;
@@ -482,6 +483,25 @@ public final class FishingController {
 		} else {
 			Alerts.actionBar(title + " - " + subtitle);
 		}
+	}
+
+	/** Master switch. Turning the mod off also turns the macro off and stops every chore. */
+	public static void setModEnabled(boolean enabled) {
+		ReelConfig cfg = ReelConfig.get();
+		cfg.modEnabled = enabled;
+		if (!enabled) {
+			cfg.macroEnabled = false;
+			ChestStorage.cancel();
+			AutoEat.cancel();
+			Housekeeping.cancel();
+			state = State.IDLE;
+			anchored = false;
+			watchSnapshot = null;
+			biteSnapshot = null;
+		}
+		hadHook = false;
+		wasBiting = false;
+		ReelConfig.save();
 	}
 
 	public static void onMacroToggled(boolean enabled) {
