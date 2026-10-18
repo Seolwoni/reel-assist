@@ -117,6 +117,8 @@ public class ReelConfigScreen extends Screen {
 			c.recastTimeoutSec = v;
 			ReelConfig.save();
 		}));
+		y += ROW;
+		toggle(left, y, 310, "낚싯대를 던지면 매크로 자동 켜기", () -> c.autoStartOnCast, v -> c.autoStartOnCast = v);
 		y += ROW + 4;
 		note("당기기는 물고기를 놓치지 않도록 최대 17틱으로 자동 제한돼요.", y);
 		note("재투척 0초 = 끔. 1틱 = 0.05초", y + 12);
@@ -240,6 +242,15 @@ public class ReelConfigScreen extends Screen {
 		y += ROW;
 		toggle(left, y, 150, "통계 트래커", () -> c.trackerEnabled, v -> c.trackerEnabled = v);
 		toggle(right, y, 150, "매크로 상태", () -> c.statusEnabled, v -> c.statusEnabled = v);
+		y += ROW;
+		add(new IntSlider(left, y, 150, "트래커 크기", "%", 50, 300, Math.round(c.trackerScale * 100), v -> {
+			c.trackerScale = v / 100f;
+			ReelConfig.save();
+		}));
+		add(new IntSlider(right, y, 150, "상태 크기", "%", 50, 300, Math.round(c.statusScale * 100), v -> {
+			c.statusScale = v / 100f;
+			ReelConfig.save();
+		}));
 		y += ROW;
 		add(new IntSlider(left, y, 150, "배경 투명도", "", 0, 255, c.hudBgAlpha, v -> {
 			c.hudBgAlpha = v;

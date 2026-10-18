@@ -33,6 +33,8 @@ public class ReelConfig {
 	public boolean workInScreens = true;
 	/** Reel in and recast when nothing bites for this many seconds (0 = off). */
 	public int recastTimeoutSec = 60;
+	/** Turn the macro on automatically when the player casts a rod by hand. */
+	public boolean autoStartOnCast = false;
 
 	// ---- Rod ----
 	/** 0 = hand, 1 = hand (protect), 2 = whole hotbar, 3 = whole hotbar (protect). */

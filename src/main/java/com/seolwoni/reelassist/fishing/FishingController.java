@@ -131,6 +131,14 @@ public final class FishingController {
 	private static void trackHookAndBite(Minecraft mc, LocalPlayer player, boolean hookAlive, boolean biting, ReelConfig cfg) {
 		if (hookAlive && !hadHook) {
 			FishingStats.recordCast();
+			if (!cfg.macroEnabled && cfg.autoStartOnCast) {
+				cfg.macroEnabled = true;
+				ReelConfig.save();
+				state = State.FISHING;
+				anchored = false;
+				Alerts.actionBar("매크로 자동 시작");
+				Alerts.click();
+			}
 			ticksSinceCast = 0;
 		}
 		if (hookAlive) ticksSinceCast++;
