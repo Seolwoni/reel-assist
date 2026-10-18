@@ -153,7 +153,14 @@ public class ReelConfigScreen extends Screen {
 		toggle(left, y, 150, "인벤 가득 알림", () -> c.fullInvAlert, v -> c.fullInvAlert = v);
 		addRenderableWidget(Button.builder(Component.literal("소리 미리듣기"), b -> Alerts.ding())
 				.bounds(right, y, 150, 20).build());
+		y += ROW;
+		toggle(left, y, 150, "찌 강조 효과", () -> c.bobberGlow, v -> c.bobberGlow = v);
+		toggle(right, y, 150, "물고기 접근 표시", () -> c.approachAlert, v -> c.approachAlert = v);
+		y += ROW;
+		toggle(left, y, 150, "접근 소리", () -> c.approachSound, v -> c.approachSound = v);
 		y += ROW + 4;
+		note("찌 색: 하늘색 = 기다리는 중, 노랑 = 물고기 접근, 빨강 = 입질", y);
+		y += 12;
 		note("인벤토리가 가득 차면 알림과 상관없이 매크로는 멈춰요.", y);
 	}
 

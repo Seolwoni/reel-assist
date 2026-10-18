@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"package": "com.seolwoni.reelassist.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"ClientPacketListenerMixin",
+		"EntityMixin",
+		"MinecraftMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

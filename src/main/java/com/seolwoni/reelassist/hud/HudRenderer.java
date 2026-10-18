@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.seolwoni.reelassist.config.ReelConfig;
+import com.seolwoni.reelassist.fishing.BobberFx;
 import com.seolwoni.reelassist.fishing.FishingController;
 import com.seolwoni.reelassist.fishing.FishingStats;
 import com.seolwoni.reelassist.fishing.LootCategory;
@@ -177,6 +178,10 @@ public final class HudRenderer {
 			}
 		}
 		out.add(rod);
+		if (BobberFx.isApproaching()) {
+			out.add(List.of(new Seg("물고기 접근 ", 0xFFFFFF55),
+					new Seg(String.format("%.1f칸", BobberFx.approachDistance()), WHITE)));
+		}
 		return out;
 	}
 

@@ -83,6 +83,8 @@ public final class FishingController {
 		boolean biting = hookAlive && isBiting(hook);
 
 		trackHookAndBite(mc, player, hookAlive, biting, cfg);
+		BobberFx.tick(hookAlive, biting);
+		approachAlert(cfg);
 		trackCatch(player);
 
 		if (hookAlive || cfg.macroEnabled) FishingStats.tickFishing();
@@ -208,6 +210,25 @@ public final class FishingController {
 			if (!s.isEmpty() && key(s).equals(key)) return s;
 		}
 		return null;
+	}
+
+	private static boolean approachAnnounced;
+	private static int approachMsgCooldown;
+
+	private static void approachAlert(ReelConfig cfg) {
+		if (!BobberFx.isApproaching()) {
+			if (BobberFx.ownHook() == null || wasBiting) approachAnnounced = false;
+			return;
+		}
+		if (!approachAnnounced) {
+			approachAnnounced = true;
+			approachMsgCooldown = 0;
+			if (cfg.approachSound) Alerts.approach();
+		}
+		if (cfg.approachAlert && --approachMsgCooldown <= 0) {
+			approachMsgCooldown = 4;
+			Alerts.actionBar(String.format("물고기가 다가오는 중... %.1f칸", BobberFx.approachDistance()), 0xFFFFFF55);
+		}
 	}
 
 	// ------------------------------------------------------------------ macro

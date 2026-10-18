@@ -45,6 +45,11 @@ public class ReelConfig {
 	public boolean biteTitle = true;
 	public boolean biteSound = true;
 	public boolean fullInvAlert = true;
+	/** Glowing outline on the bobber; colour shows idle / fish approaching / bite. */
+	public boolean bobberGlow = true;
+	/** Action-bar message while a fish swims toward the bobber. */
+	public boolean approachAlert = true;
+	public boolean approachSound = false;
 
 	// ---- Look movement ----
 	public boolean lookJitter = true;

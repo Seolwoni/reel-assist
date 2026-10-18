@@ -22,6 +22,16 @@ public final class Alerts {
 		mc.gui.hud.setOverlayMessage(Component.literal(text), false);
 	}
 
+	public static void actionBar(String text, int color) {
+		Minecraft mc = Minecraft.getInstance();
+		mc.gui.hud.setOverlayMessage(Component.literal(text).withColor(color), false);
+	}
+
+	public static void approach() {
+		Minecraft mc = Minecraft.getInstance();
+		mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_CHIME, 0.8f));
+	}
+
 	/** The "띠링" bell. */
 	public static void ding() {
 		Minecraft mc = Minecraft.getInstance();
