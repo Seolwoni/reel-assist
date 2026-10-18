@@ -1,0 +1,6 @@
+net.minecraft.world.entity.Entity
+net.minecraft.client.Minecraft
+net.minecraft.client.multiplayer.ClientPacketListener
+net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket
+net.minecraft.core.particles.ParticleTypes
+net.minecraft.world.entity.projectile.FishingHook

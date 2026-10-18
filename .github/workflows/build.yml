@@ -20,21 +20,23 @@ jobs:
         run: |
           set -o pipefail
           ./gradlew build --stacktrace 2>&1 | tee build.log
-      - name: save log on failure
-        if: failure()
+      - name: save log
+        if: always()
         run: |
           git config user.name "ci"
           git config user.email "ci@users.noreply.github.com"
+          grep -E "error:|warning:|\.java:[0-9]+|What went wrong|^> |Caused by|Exception" build.log | head -400 > /tmp/errors.txt || true
+          grep -A6 "error:" build.log | head -300 > /tmp/compile.txt || true
+          tail -300 build.log > /tmp/tail.txt
+          JAR=$(find ~/.gradle .gradle -name "minecraft-merged.jar" 2>/dev/null | head -1)
+          [ -z "$JAR" ] && JAR=$(find ~/.gradle .gradle -name "minecraft-*.jar" -size +5M 2>/dev/null | grep -v sources | head -1)
+          echo "jar: $JAR" > /tmp/sigs.txt
+          for c in $(cat .github/sigs.txt); do
+            javap -p -cp "$JAR" $c >> /tmp/sigs.txt 2>&1 || true
+          done
           git checkout --orphan ci-log
           git rm -rf --cached . > /dev/null
-          grep -E "error:|warning:|\.java:[0-9]+|What went wrong|^> |Caused by|Exception" build.log | head -400 > errors.txt || true
-          tail -300 build.log > tail.txt
-          grep -A6 "error:" build.log | head -300 > compile.txt || true
-          JAR=$(find ~/.gradle .gradle -name "minecraft-*.jar" -size +5M 2>/dev/null | grep -v sources | head -1)
-          echo "jar: $JAR" > sigs.txt
-          for c in net.minecraft.client.multiplayer.MultiPlayerGameMode net.minecraft.world.inventory.ContainerInput net.minecraft.world.entity.projectile.FishingHook; do
-            javap -p -cp "$JAR" $c >> sigs.txt 2>&1 || true
-          done
+          cp /tmp/errors.txt /tmp/compile.txt /tmp/tail.txt /tmp/sigs.txt .
           git add errors.txt tail.txt compile.txt sigs.txt
           git commit -m "build log ${{ github.run_number }}"
           git push -f origin ci-log
@@ -43,7 +45,7 @@ jobs:
           name: reelassist-jar
           path: build/libs/
       - name: release
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[no release]')
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
