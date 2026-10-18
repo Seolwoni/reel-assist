@@ -65,6 +65,8 @@ public final class FishingController {
 	private static int nextMoveIn;
 	/** Looking away from the bobber now and then: hold there this long, then look back. */
 	private static int awayHold = -1, nextAwayIn = -1;
+	/** Looking away is on hold for now (1.7.1): the head only makes the small movements around the bobber. */
+	private static final boolean LOOK_AWAY = false;
 
 	private static int discardCooldown;
 
@@ -629,7 +631,7 @@ public final class FishingController {
 		if (state == State.CAST_WAIT && timer < 12) return;
 		// Now and then, while waiting for a bite, look somewhere else for a few seconds (like checking around).
 		if (nextAwayIn < 0) nextAwayIn = rand(900, 2400);
-		if (--nextAwayIn <= 0 && state == State.FISHING && ticksSinceCast > 40 && ticksSinceBite > 40) {
+		if (LOOK_AWAY && --nextAwayIn <= 0 && state == State.FISHING && ticksSinceCast > 40 && ticksSinceBite > 40) {
 			nextAwayIn = rand(900, 2400);
 			float side = (25 + RANDOM.nextFloat() * 35) * (RANDOM.nextBoolean() ? 1 : -1);
 			startMove(cfg, side, -15 + RANDOM.nextFloat() * 30, rand(10, 18));
