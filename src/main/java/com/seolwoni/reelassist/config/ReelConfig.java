@@ -37,6 +37,17 @@ public class ReelConfig {
 	public boolean autoStartOnCast = false;
 	/** Turn the macro off when the player switches away from / removes the rod. */
 	public boolean stopWhenRodRemoved = true;
+	/** Human-like delay spread (clustered, occasional slow) instead of flat random. */
+	public boolean humanDelay = true;
+
+	// ---- Chest storage ----
+	public boolean storeEnabled = true;
+	public boolean chestSet = false;
+	public int chestX, chestY, chestZ;
+	public boolean storeFish = true;
+	public boolean storeTreasure = true;
+	public boolean storeJunk = true;
+	public boolean storeOther = false;
 
 	// ---- Rod ----
 	/** 0 = hand, 1 = hand (protect), 2 = whole hotbar, 3 = whole hotbar (protect). */

@@ -19,7 +19,7 @@ import net.minecraft.network.chat.Component;
 
 /** The settings screen opened from Mod Menu. Macro on/off sits at the very top. */
 public class ReelConfigScreen extends Screen {
-	private static final String[] TABS = {"매크로", "낚싯대", "알림", "시선", "버리기", "HUD"};
+	private static final String[] TABS = {"매크로", "낚싯대", "알림", "시선", "버리기", "보관", "HUD"};
 	private static final String[] MATCH_NAMES = {"완전 일치", "이름만", "종류만"};
 	private static final int ROW = 24;
 
@@ -58,7 +58,7 @@ public class ReelConfigScreen extends Screen {
 		}).bounds(left, 22, 310, 20).build());
 
 		// ---- Tabs ----
-		int tabW = 50;
+		int tabW = 42;
 		int tabX = cx - (tabW * TABS.length + 2 * (TABS.length - 1)) / 2;
 		for (int i = 0; i < TABS.length; i++) {
 			final int idx = i;
@@ -77,7 +77,8 @@ public class ReelConfigScreen extends Screen {
 			case 2 -> buildAlerts(left, right, y);
 			case 3 -> buildLook(left, right, y);
 			case 4 -> buildDiscard(left, right, y);
-			case 5 -> buildHud(left, right, y);
+			case 5 -> buildStorage(left, right, y);
+			case 6 -> buildHud(left, right, y);
 			default -> {
 			}
 		}
@@ -111,6 +112,8 @@ public class ReelConfigScreen extends Screen {
 			c.castDelayMax = v;
 			ReelConfig.save();
 		}));
+		y += ROW;
+		toggle(left, y, 150, "사람 같은 딜레이", () -> c.humanDelay, v -> c.humanDelay = v);
 		y += ROW;
 		toggle(left, y, 150, "화면 열려도 동작", () -> c.workInScreens, v -> c.workInScreens = v);
 		add(new IntSlider(right, y, 150, "안 물면 재투척", "초", 0, 180, c.recastTimeoutSec, v -> {
@@ -242,6 +245,29 @@ public class ReelConfigScreen extends Screen {
 
 	private Component matchDefaultText() {
 		return Component.literal("새 항목: " + MATCH_NAMES[cfg().defaultMatchMode]);
+	}
+
+	private void buildStorage(int left, int right, int y) {
+		ReelConfig c = cfg();
+		toggle(left, y, 150, "자동 보관", () -> c.storeEnabled, v -> c.storeEnabled = v);
+		Button clear = Button.builder(Component.literal("상자 지정 해제"), b -> {
+			c.chestSet = false;
+			ReelConfig.save();
+			rebuildWidgets();
+		}).bounds(right, y, 150, 20).build();
+		clear.active = c.chestSet;
+		addRenderableWidget(clear);
+		y += ROW;
+		note(c.chestSet ? "보관 상자: " + c.chestX + ", " + c.chestY + ", " + c.chestZ : "보관 상자: 지정 안 됨", y + 4);
+		y += 18;
+		toggle(left, y, 150, "물고기 보관", () -> c.storeFish, v -> c.storeFish = v);
+		toggle(right, y, 150, "보물 보관", () -> c.storeTreasure, v -> c.storeTreasure = v);
+		y += ROW;
+		toggle(left, y, 150, "쓰레기 보관", () -> c.storeJunk, v -> c.storeJunk = v);
+		toggle(right, y, 150, "기타 아이템 보관", () -> c.storeOther, v -> c.storeOther = v);
+		y += ROW + 4;
+		note("상자를 바라보고 K 키로 지정 (한 번 더 누르면 해제, 조작 설정에서 키 변경)", y);
+		note("인벤토리가 가득 차면 손이 닿는 거리의 상자에 넣고 다시 낚시해요. 낚싯대는 넣지 않아요.", y + 12);
 	}
 
 	private void buildHud(int left, int right, int y) {

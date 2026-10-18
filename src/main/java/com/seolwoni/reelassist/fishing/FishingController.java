@@ -93,12 +93,17 @@ public final class FishingController {
 			stopMacro("매크로 꺼짐", "낚싯대를 내려놨어요", false);
 		}
 		if (cfg.macroEnabled) {
-			runMacro(mc, player, hookAlive, biting, cfg);
-			lookMovement(player, cfg);
-			autoDiscard(mc, player, cfg);
+			if (ChestStorage.active()) {
+				ChestStorage.tick(mc, player, hookAlive);
+			} else {
+				runMacro(mc, player, hookAlive, biting, cfg);
+				lookMovement(player, cfg);
+				autoDiscard(mc, player, cfg);
+			}
 		} else {
 			state = State.IDLE;
 			anchored = false;
+			ChestStorage.cancel();
 		}
 		rememberHand(player);
 	}
@@ -278,7 +283,7 @@ public final class FishingController {
 				if (hookAlive) {
 					state = State.FISHING;
 				} else {
-					timer = rand(cfg.castDelayMin, cfg.castDelayMax);
+					timer = delay(cfg.castDelayMin, cfg.castDelayMax);
 					state = State.CAST_WAIT;
 				}
 			}
@@ -289,7 +294,11 @@ public final class FishingController {
 				}
 				if (--timer > 0) return;
 				if (player.getInventory().getFreeSlot() == -1) {
-					stopMacro("인벤토리 가득 참!", "매크로를 멈췄어요", cfg.fullInvAlert);
+					if (cfg.storeEnabled && ChestStorage.hasChest()) {
+						ChestStorage.start(mc, player);
+					} else {
+						stopMacro("인벤토리 가득 참!", "매크로를 멈췄어요", cfg.fullInvAlert);
+					}
 					return;
 				}
 				if (!prepareRod(player, cfg)) return;
@@ -307,7 +316,7 @@ public final class FishingController {
 				if (biting) {
 					int max = Math.min(cfg.reelDelayMax, SAFE_REEL_TICKS);
 					int min = Math.min(cfg.reelDelayMin, max);
-					timer = rand(min, max);
+					timer = delay(min, max);
 					state = State.REEL_WAIT;
 					if (timer <= 0) reel(mc, player);
 					return;
@@ -340,6 +349,29 @@ public final class FishingController {
 		player.swing(InteractionHand.MAIN_HAND);
 	}
 
+	/**
+	 * A random delay in [min, max]. In "human" mode most values cluster in the lower
+	 * third of the range with an occasional slow reaction, instead of a flat spread.
+	 */
+	public static int delay(int min, int max) {
+		if (max <= min) return min;
+		if (!ReelConfig.get().humanDelay) return rand(min, max);
+		double span = max - min;
+		double v;
+		if (RANDOM.nextDouble() < 0.08) {
+			v = min + span * (0.6 + 0.4 * RANDOM.nextDouble());
+		} else {
+			v = min + span * 0.3 + RANDOM.nextGaussian() * span * 0.15;
+		}
+		return (int) Math.max(min, Math.min(max, Math.round(v)));
+	}
+
+	/** Re-anchor the look movement and restart the cast cycle (after a storage trip). */
+	public static void resetLook() {
+		anchored = false;
+		state = State.IDLE;
+	}
+
 	private static int rand(int min, int max) {
 		if (max <= min) return min;
 		return min + RANDOM.nextInt(max - min + 1);
@@ -349,6 +381,7 @@ public final class FishingController {
 		ReelConfig cfg = ReelConfig.get();
 		cfg.macroEnabled = false;
 		ReelConfig.save();
+		ChestStorage.cancel();
 		state = State.IDLE;
 		anchored = false;
 		if (alert) {
@@ -516,6 +549,7 @@ public final class FishingController {
 
 	public static String stateLabel() {
 		if (!ReelConfig.get().macroEnabled) return "꺼짐";
+		if (ChestStorage.active()) return ChestStorage.label();
 		return switch (state) {
 			case IDLE, CAST_WAIT -> "던지는 중";
 			case FISHING -> "기다리는 중";

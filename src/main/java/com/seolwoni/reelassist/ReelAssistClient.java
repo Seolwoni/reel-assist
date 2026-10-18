@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.seolwoni.reelassist.config.ReelConfig;
+import com.seolwoni.reelassist.fishing.ChestStorage;
 import com.seolwoni.reelassist.fishing.FishingController;
 import com.seolwoni.reelassist.fishing.FishingStats;
 import com.seolwoni.reelassist.gui.InventoryMarker;
@@ -29,6 +30,7 @@ public class ReelAssistClient implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Reel Assist");
 
 	public static KeyMapping markDiscardKey;
+	public static KeyMapping markChestKey;
 
 	public static Identifier id(String path) {
 		return Identifier.fromNamespaceAndPath(MOD_ID, path);
@@ -43,7 +45,13 @@ public class ReelAssistClient implements ClientModInitializer {
 		markDiscardKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.reelassist.mark_discard", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_DELETE, category));
 
-		ClientTickEvents.END_CLIENT_TICK.register(FishingController::tick);
+		markChestKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+				"key.reelassist.mark_chest", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, category));
+
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			while (markChestKey.consumeClick()) ChestStorage.markLookedAt(client);
+			FishingController.tick(client);
+		});
 
 		HudElementRegistry.addLast(id("hud"), (graphics, deltaTracker) -> HudRenderer.renderHud(graphics));
 

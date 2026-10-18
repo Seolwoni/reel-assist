@@ -4,3 +4,6 @@ net.minecraft.client.multiplayer.ClientPacketListener
 net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket
 net.minecraft.core.particles.ParticleTypes
 net.minecraft.world.entity.projectile.FishingHook
+net.minecraft.world.phys.BlockHitResult
+net.minecraft.client.player.LocalPlayer
+net.minecraft.client.KeyMapping
