@@ -39,7 +39,7 @@ public final class HudRenderer {
 
 	public static void renderHud(GuiGraphicsExtractor g) {
 		Minecraft mc = Minecraft.getInstance();
-		if (mc.player == null) return;
+		if (mc.player == null || com.seolwoni.assistcore.hud.AssistHud.hidden()) return;
 		if (mc.gui.screen() instanceof HudEditScreen) return;
 		ReelConfig cfg = ReelConfig.get();
 		if (!cfg.modEnabled) return;
