@@ -7,3 +7,7 @@ net.minecraft.world.entity.projectile.FishingHook
 net.minecraft.world.phys.BlockHitResult
 net.minecraft.client.player.LocalPlayer
 net.minecraft.client.KeyMapping
+net.minecraft.client.gui.GuiGraphicsExtractor
+net.minecraft.client.gui.components.EditBox
+net.minecraft.world.inventory.InventoryMenu
+net.minecraft.world.item.enchantment.ItemEnchantments

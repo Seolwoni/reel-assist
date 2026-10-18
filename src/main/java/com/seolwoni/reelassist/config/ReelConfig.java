@@ -46,6 +46,25 @@ public class ReelConfig {
 	public int eatThreshold = 14;
 	public boolean eatRawFish = true;
 
+	// ---- Inventory chores ----
+	public boolean autoSort = true;
+	public int sortEveryCatches = 30;
+	public int sortFreeSlots = 5;
+	/** 0 = never, 1 = when the chest is at least 70% full, 2 = every trip. */
+	public int chestSortMode = 1;
+	public boolean supplyRods = true;
+	public int hotbarRods = 5;
+	public boolean supplyFood = true;
+	public boolean fetchFromChest = true;
+	public boolean combineRods = true;
+	public boolean wornRodsToChest = true;
+	public boolean groundRecast = true;
+
+	// ---- Goals ----
+	public List<GoalEntry> goals = new ArrayList<>();
+	public boolean timerEnabled = false;
+	public int timerMinutes = 60;
+
 	// ---- Chest storage ----
 	public boolean storeEnabled = true;
 	public boolean chestSet = false;
@@ -107,6 +126,7 @@ public class ReelConfig {
 					ReelConfig loaded = GSON.fromJson(r, ReelConfig.class);
 					if (loaded != null) {
 						if (loaded.discardEntries == null) loaded.discardEntries = new ArrayList<>();
+						if (loaded.goals == null) loaded.goals = new ArrayList<>();
 						instance = loaded;
 					}
 				}
@@ -140,6 +160,11 @@ public class ReelConfig {
 		jitterIntervalMax = clamp(jitterIntervalMax, jitterIntervalMin, 120);
 		hudBgAlpha = clamp(hudBgAlpha, 0, 255);
 		defaultMatchMode = clamp(defaultMatchMode, 0, 2);
+		hotbarRods = clamp(hotbarRods, 1, 8);
+		sortEveryCatches = clamp(sortEveryCatches, 5, 500);
+		sortFreeSlots = clamp(sortFreeSlots, 0, 27);
+		chestSortMode = clamp(chestSortMode, 0, 2);
+		timerMinutes = clamp(timerMinutes, 1, 1440);
 	}
 
 	private static int clamp(int v, int min, int max) {

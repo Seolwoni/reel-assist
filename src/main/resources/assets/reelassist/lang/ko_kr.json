@@ -1,5 +1,6 @@
 {
 	"key.category.reelassist.main": "Reel Assist",
 	"key.reelassist.mark_discard": "버리기 아이템 지정 (인벤토리에서)",
-	"key.reelassist.mark_chest": "보관 상자 지정 (상자를 보고)"
+	"key.reelassist.mark_chest": "보관 상자 지정 (상자를 보고)",
+	"key.reelassist.mark_goal": "목표 아이템 지정 (인벤토리에서)"
 }

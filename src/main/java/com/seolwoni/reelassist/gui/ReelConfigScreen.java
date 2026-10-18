@@ -10,6 +10,7 @@ import com.seolwoni.reelassist.config.ReelConfig;
 import com.seolwoni.reelassist.fishing.Alerts;
 import com.seolwoni.reelassist.fishing.FishingController;
 import com.seolwoni.reelassist.fishing.FishingStats;
+import com.seolwoni.reelassist.fishing.Goals;
 import com.seolwoni.reelassist.hud.HudEditScreen;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -19,7 +20,7 @@ import net.minecraft.network.chat.Component;
 
 /** The settings screen opened from Mod Menu. Macro on/off sits at the very top. */
 public class ReelConfigScreen extends Screen {
-	private static final String[] TABS = {"매크로", "낚싯대", "알림", "시선", "버리기", "보관", "HUD"};
+	private static final String[] TABS = {"매크로", "낚싯대", "알림", "시선", "버리기", "보관", "정리·보급", "목표", "HUD"};
 	private static final String[] MATCH_NAMES = {"완전 일치", "이름만", "종류만"};
 	private static final int ROW = 24;
 
@@ -58,19 +59,23 @@ public class ReelConfigScreen extends Screen {
 		}).bounds(left, 22, 310, 20).build());
 
 		// ---- Tabs ----
-		int tabW = 42;
-		int tabX = cx - (tabW * TABS.length + 2 * (TABS.length - 1)) / 2;
+		// Two rows of tabs: 5 on top, 4 below.
 		for (int i = 0; i < TABS.length; i++) {
 			final int idx = i;
-			Button tb = Button.builder(Component.literal(i == tab ? "[" + TABS[i] + "]" : TABS[i]), b -> {
+			int rowCount = i < 5 ? 5 : 4;
+			int col = i < 5 ? i : i - 5;
+			int tabW = (310 - 2 * (rowCount - 1)) / rowCount;
+			int tx = left + col * (tabW + 2);
+			int ty = i < 5 ? 46 : 68;
+			Button tb = Button.builder(Component.literal(TABS[i]), b -> {
 				tab = idx;
 				rebuildWidgets();
-			}).bounds(tabX + i * (tabW + 2), 46, tabW, 20).build();
+			}).bounds(tx, ty, tabW, 20).build();
 			tb.active = i != tab;
 			addRenderableWidget(tb);
 		}
 
-		int y = 74;
+		int y = 96;
 		switch (tab) {
 			case 0 -> buildMacro(left, right, y);
 			case 1 -> buildRod(left, right, y);
@@ -78,7 +83,9 @@ public class ReelConfigScreen extends Screen {
 			case 3 -> buildLook(left, right, y);
 			case 4 -> buildDiscard(left, right, y);
 			case 5 -> buildStorage(left, right, y);
-			case 6 -> buildHud(left, right, y);
+			case 6 -> buildChores(left, right, y);
+			case 7 -> buildGoals(left, right, y);
+			case 8 -> buildHud(left, right, y);
 			default -> {
 			}
 		}
@@ -114,6 +121,7 @@ public class ReelConfigScreen extends Screen {
 		}));
 		y += ROW;
 		toggle(left, y, 150, "사람 같은 딜레이", () -> c.humanDelay, v -> c.humanDelay = v);
+		toggle(right, y, 150, "땅에 떨어지면 재투척", () -> c.groundRecast, v -> c.groundRecast = v);
 		y += ROW;
 		toggle(left, y, 150, "화면 열려도 동작", () -> c.workInScreens, v -> c.workInScreens = v);
 		add(new IntSlider(right, y, 150, "안 물면 재투척", "초", 0, 180, c.recastTimeoutSec, v -> {
@@ -121,12 +129,10 @@ public class ReelConfigScreen extends Screen {
 			ReelConfig.save();
 		}));
 		y += ROW;
-		toggle(left, y, 310, "낚싯대를 던지면 매크로 자동 켜기", () -> c.autoStartOnCast, v -> c.autoStartOnCast = v);
-		y += ROW;
-		toggle(left, y, 310, "낚싯대를 손에서 빼면 매크로 끄기", () -> c.stopWhenRodRemoved, v -> c.stopWhenRodRemoved = v);
+		toggle(left, y, 150, "던지면 자동 켜기", () -> c.autoStartOnCast, v -> c.autoStartOnCast = v);
+		toggle(right, y, 150, "낚싯대 빼면 끄기", () -> c.stopWhenRodRemoved, v -> c.stopWhenRodRemoved = v);
 		y += ROW + 4;
-		note("당기기는 물고기를 놓치지 않도록 최대 17틱으로 자동 제한돼요.", y);
-		note("재투척 0초 = 끔. 1틱 = 0.05초", y + 12);
+		note("당기기는 놓치지 않게 최대 17틱으로 제한. 재투척 0초 = 끔. 1틱 = 0.05초", y);
 	}
 
 	private void buildRod(int left, int right, int y) {
@@ -275,7 +281,69 @@ public class ReelConfigScreen extends Screen {
 		toggle(right, y, 150, "기타 아이템 보관", () -> c.storeOther, v -> c.storeOther = v);
 		y += ROW + 4;
 		note("상자를 바라보고 K 키로 지정 (한 번 더 누르면 해제, 조작 설정에서 키 변경)", y);
-		note("인벤토리가 가득 차면 손이 닿는 거리의 상자에 넣고 다시 낚시해요. 낚싯대는 넣지 않아요.", y + 12);
+		note("인벤이 차면 손 닿는 거리의 상자에 넣고 다시 낚시. 쓰는 낚싯대는 안 넣어요.", y + 12);
+	}
+
+	private void buildChores(int left, int right, int y) {
+		ReelConfig c = cfg();
+		toggle(left, y, 150, "인벤 자동 정리", () -> c.autoSort, v -> c.autoSort = v);
+		add(new IntSlider(right, y, 150, "정리 주기", "번 낚을 때", 5, 200, c.sortEveryCatches, v -> {
+			c.sortEveryCatches = v;
+			ReelConfig.save();
+		}));
+		y += ROW;
+		add(new IntSlider(left, y, 150, "빈 칸 이하면 정리", "칸", 0, 27, c.sortFreeSlots, v -> {
+			c.sortFreeSlots = v;
+			ReelConfig.save();
+		}));
+		addRenderableWidget(Button.builder(chestSortText(), b -> {
+			c.chestSortMode = (c.chestSortMode + 1) % 3;
+			ReelConfig.save();
+			b.setMessage(chestSortText());
+		}).bounds(right, y, 150, 20).build());
+		y += ROW;
+		toggle(left, y, 150, "낚싯대 보급", () -> c.supplyRods, v -> c.supplyRods = v);
+		add(new IntSlider(right, y, 150, "핫바 낚싯대", "개", 1, 8, c.hotbarRods, v -> {
+			c.hotbarRods = v;
+			ReelConfig.save();
+		}));
+		y += ROW;
+		toggle(left, y, 150, "음식 보급", () -> c.supplyFood, v -> c.supplyFood = v);
+		toggle(right, y, 150, "상자에서 꺼내오기", () -> c.fetchFromChest, v -> c.fetchFromChest = v);
+		y += ROW;
+		toggle(left, y, 150, "낡은 낚싯대 합치기", () -> c.combineRods, v -> c.combineRods = v);
+		toggle(right, y, 150, "마법 낚싯대 상자로", () -> c.wornRodsToChest, v -> c.wornRodsToChest = v);
+		y += ROW + 4;
+		note("합치기는 마법 없는 낚싯대만 (제작칸 수리라 마법이 사라져요). 마법 붙은 건 상자로.", y);
+	}
+
+	private Component chestSortText() {
+		String[] names = {"상자 정리: 안 함", "상자 정리: 70% 이상", "상자 정리: 매번"};
+		return Component.literal(names[cfg().chestSortMode]);
+	}
+
+	private void buildGoals(int left, int right, int y) {
+		ReelConfig c = cfg();
+		addRenderableWidget(Button.builder(Component.literal("목표 아이템 관리 (" + c.goals.size() + "개)"),
+				b -> this.minecraft.gui.setScreen(new GoalScreen(this))).bounds(left, y, 310, 20).build());
+		y += ROW;
+		toggle(left, y, 150, "타이머", () -> c.timerEnabled, v -> {
+			c.timerEnabled = v;
+			Goals.resetTimer();
+		});
+		add(new IntSlider(right, y, 150, "시간", "분", 1, 600, c.timerMinutes, v -> {
+			c.timerMinutes = v;
+			Goals.resetTimer();
+			ReelConfig.save();
+		}));
+		y += ROW;
+		addRenderableWidget(Button.builder(Component.literal("타이머 초기화"), b -> {
+			Goals.resetTimer();
+			Alerts.click();
+		}).bounds(left, y, 150, 20).build());
+		y += ROW + 4;
+		note("타이머는 매크로가 켜져 있을 때만 줄어들고, 0이 되면 매크로를 멈춰요.", y);
+		note("인벤토리에서 바로 지정하려면 조작 설정에서 '목표 아이템 지정' 키를 정해주세요.", y + 12);
 	}
 
 	private void buildHud(int left, int right, int y) {

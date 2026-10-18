@@ -32,6 +32,13 @@ public enum LootCategory {
 			Items.STICK, Items.STRING, Items.POTION, Items.BONE, Items.INK_SAC,
 			Items.TRIPWIRE_HOOK, Items.BAMBOO);
 
+	/** Every vanilla fishing drop, in display order (fish, treasure, junk). */
+	public static final java.util.List<Item> FISHING_ITEMS = java.util.List.of(
+			Items.COD, Items.SALMON, Items.TROPICAL_FISH, Items.PUFFERFISH,
+			Items.ENCHANTED_BOOK, Items.NAME_TAG, Items.SADDLE, Items.NAUTILUS_SHELL, Items.BOW, Items.FISHING_ROD,
+			Items.LILY_PAD, Items.BOWL, Items.LEATHER, Items.LEATHER_BOOTS, Items.ROTTEN_FLESH, Items.STICK,
+			Items.STRING, Items.POTION, Items.BONE, Items.INK_SAC, Items.TRIPWIRE_HOOK, Items.BAMBOO);
+
 	public static LootCategory of(ItemStack stack) {
 		Item item = stack.getItem();
 		if (FISH_ITEMS.contains(item)) return FISH;

@@ -1,5 +1,6 @@
 {
 	"key.category.reelassist.main": "Reel Assist",
 	"key.reelassist.mark_discard": "Mark item to discard (in inventory)",
-	"key.reelassist.mark_chest": "Mark storage chest (look at it)"
+	"key.reelassist.mark_chest": "Mark storage chest (look at it)",
+	"key.reelassist.mark_goal": "Mark goal item (in inventory)"
 }

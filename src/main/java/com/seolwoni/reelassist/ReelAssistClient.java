@@ -31,6 +31,7 @@ public class ReelAssistClient implements ClientModInitializer {
 
 	public static KeyMapping markDiscardKey;
 	public static KeyMapping markChestKey;
+	public static KeyMapping markGoalKey;
 
 	public static Identifier id(String path) {
 		return Identifier.fromNamespaceAndPath(MOD_ID, path);
@@ -47,6 +48,9 @@ public class ReelAssistClient implements ClientModInitializer {
 
 		markChestKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.reelassist.mark_chest", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, category));
+
+		markGoalKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+				"key.reelassist.mark_goal", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, category));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (markChestKey.consumeClick()) ChestStorage.markLookedAt(client);

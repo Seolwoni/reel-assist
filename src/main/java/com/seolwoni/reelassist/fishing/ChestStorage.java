@@ -1,5 +1,8 @@
 package com.seolwoni.reelassist.fishing;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.seolwoni.reelassist.config.ReelConfig;
 
 import net.minecraft.client.Minecraft;
@@ -38,7 +41,10 @@ public final class ChestStorage {
 	private static float fromYaw, fromPitch, toYaw, toPitch;
 	private static int turnTick, turnLen;
 	private static int moved;
+	private static int taken;
 	private static boolean chestFull;
+	private static int phase;
+	private static Sorter chestSorter;
 
 	private ChestStorage() {
 	}
@@ -109,7 +115,10 @@ public final class ChestStorage {
 		savedYaw = player.getYRot();
 		savedPitch = player.getXRot();
 		moved = 0;
+		taken = 0;
 		chestFull = false;
+		phase = 0;
+		chestSorter = null;
 		step = Step.REEL_IN;
 		timer = FishingController.delay(2, 8);
 		return true;
@@ -164,12 +173,22 @@ public final class ChestStorage {
 					return;
 				}
 				if (--timer > 0) return;
-				if (!moveOne(mc, player, screen.getMenu())) {
-					timer = FishingController.delay(3, 8);
-					step = Step.CLOSE;
+				AbstractContainerMenu menu = screen.getMenu();
+				boolean acted = switch (phase) {
+					case 0 -> moveOne(mc, player, menu);
+					case 1 -> takeOne(mc, player, menu);
+					case 2 -> sortChest(mc, player, menu);
+					default -> false;
+				};
+				if (!acted) {
+					phase++;
+					if (phase > 2) {
+						timer = FishingController.delay(3, 8);
+						step = Step.CLOSE;
+					}
 					return;
 				}
-				timer = FishingController.delay(1, 4);
+				timer = phase == 2 ? Math.max(1, FishingController.delay(2, 8) / 2) : FishingController.delay(1, 4);
 			}
 			case CLOSE -> {
 				if (--timer > 0) return;
@@ -188,7 +207,7 @@ public final class ChestStorage {
 				} else if (player.getInventory().getFreeSlot() == -1) {
 					FishingController.stopMacro("인벤토리 가득 참!", "보관할 아이템이 없어요", ReelConfig.get().fullInvAlert);
 				} else {
-					Alerts.actionBar("보관 완료: " + moved + "칸", 0xFF55FF55);
+					Alerts.actionBar("보관 " + moved + "칸" + (taken > 0 ? ", 꺼냄 " + taken + "칸" : ""), 0xFF55FF55);
 				}
 			}
 		}
@@ -236,9 +255,66 @@ public final class ChestStorage {
 		return false;
 	}
 
-	public static boolean shouldStore(ItemStack stack) {
-		if (stack.isEmpty() || stack.is(Items.FISHING_ROD)) return false;
+	private static List<Integer> chestSlots(AbstractContainerMenu menu) {
+		List<Integer> out = new ArrayList<>();
+		for (int i = 0; i < menu.slots.size(); i++) {
+			if (!(menu.slots.get(i).container instanceof Inventory)) out.add(i);
+		}
+		return out;
+	}
+
+	/** Takes rods / food the player is out of. Returns false when nothing more is needed. */
+	private static boolean takeOne(Minecraft mc, LocalPlayer player, AbstractContainerMenu menu) {
 		ReelConfig cfg = ReelConfig.get();
+		if (player.getInventory().getFreeSlot() == -1) return false;
+		int rods = Housekeeping.rodsWanted(player, cfg);
+		boolean food = Housekeeping.foodWanted(player, cfg);
+		if (rods <= 0 && !food) return false;
+		int bestSlot = -1;
+		int bestRem = Integer.MAX_VALUE;
+		for (int i : chestSlots(menu)) {
+			ItemStack s = menu.slots.get(i).getItem();
+			if (rods > 0 && Housekeeping.usable(s, cfg)) {
+				int r = FishingController.remaining(s);
+				if (r < bestRem) {
+					bestRem = r;
+					bestSlot = i;
+				}
+			}
+		}
+		if (bestSlot == -1 && food) {
+			for (int i : chestSlots(menu)) {
+				if (AutoEat.isEdible(menu.slots.get(i).getItem())) {
+					bestSlot = i;
+					break;
+				}
+			}
+		}
+		if (bestSlot == -1) return false;
+		mc.gameMode.handleContainerInput(menu.containerId, bestSlot, 0, ContainerInput.QUICK_MOVE, player);
+		taken++;
+		return true;
+	}
+
+	private static boolean sortChest(Minecraft mc, LocalPlayer player, AbstractContainerMenu menu) {
+		ReelConfig cfg = ReelConfig.get();
+		if (chestSorter == null) {
+			if (cfg.chestSortMode == 0) return false;
+			List<Integer> slots = chestSlots(menu);
+			if (cfg.chestSortMode == 1 && Sorter.fill(menu, slots) < 0.7) return false;
+			chestSorter = new Sorter(menu, slots);
+		}
+		return chestSorter.step(mc, player);
+	}
+
+	public static boolean shouldStore(ItemStack stack) {
+		if (stack.isEmpty()) return false;
+		ReelConfig cfg = ReelConfig.get();
+		if (stack.is(Items.FISHING_ROD)) {
+			// Worn rods: enchanted ones go to the chest; plain ones stay to be combined (unless combining is off).
+			if (!cfg.wornRodsToChest || !Housekeeping.worn(stack, cfg)) return false;
+			return stack.isEnchanted() || !cfg.combineRods;
+		}
 		return switch (LootCategory.of(stack)) {
 			case FISH -> cfg.storeFish;
 			case TREASURE -> cfg.storeTreasure;

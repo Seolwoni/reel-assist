@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 
 import com.seolwoni.reelassist.ReelAssistClient;
 import com.seolwoni.reelassist.config.DiscardEntry;
+import com.seolwoni.reelassist.config.GoalEntry;
 import com.seolwoni.reelassist.config.ReelConfig;
 import com.seolwoni.reelassist.fishing.Alerts;
 
@@ -46,7 +47,9 @@ public final class InventoryMarker {
 
 	public static void onKey(Screen screen, KeyEvent event) {
 		if (!(screen instanceof AbstractContainerScreen<?> acs)) return;
-		if (!ReelAssistClient.markDiscardKey.matches(event)) return;
+		boolean discard = ReelAssistClient.markDiscardKey.matches(event);
+		boolean goal = ReelAssistClient.markGoalKey.matches(event);
+		if (!discard && !goal) return;
 		lookup();
 		if (hoveredSlotField == null) return;
 		try {
@@ -54,10 +57,33 @@ public final class InventoryMarker {
 			if (slot == null) return;
 			ItemStack stack = slot.getItem();
 			if (stack.isEmpty()) return;
-			toggle(stack);
+			if (goal) toggleGoal(stack);
+			else toggle(stack);
 		} catch (Exception e) {
 			ReelAssistClient.LOGGER.warn("Failed to read hovered slot", e);
 		}
+	}
+
+	private static void toggleGoal(ItemStack stack) {
+		ReelConfig cfg = ReelConfig.get();
+		String name = stack.getHoverName().getString();
+		for (GoalEntry g : cfg.goals) {
+			if (g.kind == GoalEntry.EXACT && g.exact != null && g.exact.sameIdentity(stack)) {
+				cfg.goals.remove(g);
+				ReelConfig.save();
+				Alerts.actionBar("목표에서 제거: " + name);
+				Alerts.click();
+				return;
+			}
+		}
+		GoalEntry g = new GoalEntry();
+		g.kind = GoalEntry.EXACT;
+		g.exact = DiscardEntry.of(stack, DiscardEntry.EXACT);
+		g.label = name;
+		cfg.goals.add(g);
+		ReelConfig.save();
+		Alerts.actionBar("목표에 추가: " + name + " (설정 → 목표에서 개수 지정)", 0xFFFF55FF);
+		Alerts.click();
 	}
 
 	private static void toggle(ItemStack stack) {

@@ -52,6 +52,8 @@ public final class FishingController {
 	private static int ticksSinceBite = 1000;
 	private static Map<String, Integer> biteSnapshot;
 	private static Map<String, Integer> watchSnapshot;
+	private static ItemStack[] biteSlots;
+	private static ItemStack[] watchSlots;
 	private static int watchTicks;
 
 	// Look movement
@@ -97,6 +99,8 @@ public final class FishingController {
 				ChestStorage.tick(mc, player, hookAlive);
 			} else if (AutoEat.active()) {
 				AutoEat.tick(mc, player);
+			} else if (Housekeeping.active()) {
+				Housekeeping.tick(mc, player);
 			} else {
 				runMacro(mc, player, hookAlive, biting, cfg);
 				lookMovement(player, cfg);
@@ -107,7 +111,9 @@ public final class FishingController {
 			anchored = false;
 			ChestStorage.cancel();
 			AutoEat.cancel();
+			Housekeeping.cancel();
 		}
+		if (cfg.macroEnabled) Goals.tickTimer();
 		rememberHand(player);
 	}
 
@@ -193,6 +199,7 @@ public final class FishingController {
 		if (biting) {
 			ticksSinceBite = 0;
 			biteSnapshot = snapshot(player.getInventory());
+			biteSlots = slotSnapshot(player.getInventory());
 		} else {
 			ticksSinceBite++;
 		}
@@ -200,6 +207,7 @@ public final class FishingController {
 		// The line came out of the water right after (or during) a bite -> watch for the catch.
 		if (hadHook && !hookAlive && ticksSinceBite <= 2 && biteSnapshot != null) {
 			watchSnapshot = biteSnapshot;
+			watchSlots = biteSlots;
 			watchTicks = CATCH_WATCH_TICKS;
 		}
 		if (!hookAlive) biteSnapshot = null;
@@ -215,11 +223,15 @@ public final class FishingController {
 		for (Map.Entry<String, Integer> e : now.entrySet()) {
 			int before = watchSnapshot.getOrDefault(e.getKey(), 0);
 			if (e.getValue() > before) {
-				ItemStack sample = findStack(inv, e.getKey());
+				ItemStack sample = changedStack(inv, e.getKey());
+				if (sample == null) sample = findStack(inv, e.getKey());
 				if (sample != null) {
+					int amount = e.getValue() - before;
 					LootCategory cat = LootCategory.of(sample);
 					FishingStats.recordCatch(cat, DiscardEntry.itemId(sample),
-							sample.getHoverName().getString(), e.getValue() - before);
+							sample.getHoverName().getString(), amount);
+					Housekeeping.onCatch();
+					Goals.onCatch(sample, amount);
 				}
 				watchSnapshot = null;
 				return;
@@ -242,6 +254,26 @@ public final class FishingController {
 	private static void add(Map<String, Integer> map, ItemStack s) {
 		if (s.isEmpty()) return;
 		map.merge(key(s), s.getCount(), Integer::sum);
+	}
+
+	private static ItemStack[] slotSnapshot(Inventory inv) {
+		ItemStack[] out = new ItemStack[41];
+		for (int i = 0; i < 41; i++) out[i] = inv.getItem(i).copy();
+		return out;
+	}
+
+	/** The slot that actually received the catch (so e.g. the exact enchanted book is known). */
+	private static ItemStack changedStack(Inventory inv, String key) {
+		if (watchSlots == null) return null;
+		for (int i = 0; i < 41; i++) {
+			ItemStack now = inv.getItem(i);
+			if (now.isEmpty() || !key(now).equals(key)) continue;
+			ItemStack before = watchSlots[i];
+			if (before.isEmpty() || !ItemStack.isSameItemSameComponents(before, now) || now.getCount() > before.getCount()) {
+				return now;
+			}
+		}
+		return null;
 	}
 
 	private static ItemStack findStack(Inventory inv, String key) {
@@ -305,6 +337,7 @@ public final class FishingController {
 					return;
 				}
 				if (AutoEat.tryStart(player)) return;
+				if (Housekeeping.tryStart(mc, player)) return;
 				if (!prepareRod(player, cfg)) return;
 				use(mc, player);
 				ticksSinceCast = 0;
@@ -325,6 +358,18 @@ public final class FishingController {
 					if (timer <= 0) reel(mc, player);
 					return;
 				}
+				if (cfg.groundRecast && checkGrounded(player.fishing)) {
+					use(mc, player);
+					state = State.IDLE;
+					groundFails++;
+					if (groundFails >= 3) {
+						groundFails = 0;
+						stopMacro("찌가 물에 안 들어가요", "3번 연속 실패해서 멈췄어요", true);
+					} else {
+						Alerts.actionBar("찌가 물에 안 들어가서 다시 던져요 (" + groundFails + "/3)", 0xFFFFAA00);
+					}
+					return;
+				}
 				if (cfg.recastTimeoutSec > 0 && ticksSinceCast > cfg.recastTimeoutSec * 20) {
 					use(mc, player);
 					state = State.IDLE;
@@ -340,9 +385,37 @@ public final class FishingController {
 		}
 	}
 
+	private static int groundFails;
+	private static int groundTicks;
+	private static net.minecraft.world.phys.Vec3 lastHookPos;
+
+	/** True once the bobber has clearly settled somewhere other than water. */
+	private static boolean checkGrounded(FishingHook hook) {
+		if (hook == null) return false;
+		if (hook.isInWater()) {
+			groundTicks = 0;
+			groundFails = 0;
+			return false;
+		}
+		// Client-side velocity is unreliable for interpolated entities, so compare positions.
+		double moved = lastHookPos == null ? 1 : hook.position().distanceToSqr(lastHookPos);
+		lastHookPos = hook.position();
+		if (ticksSinceCast < 25) return false;
+		boolean stuck = hook.getHookedIn() != null || hook.onGround() || moved < 1.0E-4;
+		groundTicks = stuck ? groundTicks + 1 : 0;
+		if (groundTicks >= 10) {
+			groundTicks = 0;
+			return true;
+		}
+		return false;
+	}
+
 	private static void reel(Minecraft mc, LocalPlayer player) {
 		// Make sure the catch is watched even if the bite flag already dropped this tick.
-		if (biteSnapshot == null) biteSnapshot = snapshot(player.getInventory());
+		if (biteSnapshot == null) {
+			biteSnapshot = snapshot(player.getInventory());
+			biteSlots = slotSnapshot(player.getInventory());
+		}
 		ticksSinceBite = 0;
 		use(mc, player);
 		state = State.IDLE;
@@ -387,6 +460,7 @@ public final class FishingController {
 		ReelConfig.save();
 		ChestStorage.cancel();
 		AutoEat.cancel();
+		Housekeeping.cancel();
 		state = State.IDLE;
 		anchored = false;
 		if (alert) {
@@ -556,6 +630,7 @@ public final class FishingController {
 		if (!ReelConfig.get().macroEnabled) return "꺼짐";
 		if (ChestStorage.active()) return ChestStorage.label();
 		if (AutoEat.active()) return AutoEat.label();
+		if (Housekeeping.active()) return Housekeeping.label();
 		return switch (state) {
 			case IDLE, CAST_WAIT -> "던지는 중";
 			case FISHING -> "기다리는 중";

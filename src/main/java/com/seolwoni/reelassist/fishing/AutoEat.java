@@ -144,7 +144,7 @@ public final class AutoEat {
 		return best;
 	}
 
-	private static boolean isEdible(ItemStack s) {
+	public static boolean isEdible(ItemStack s) {
 		if (s.isEmpty() || !s.has(DataComponents.FOOD)) return false;
 		if (NEVER.contains(s.getItem())) return false;
 		if (RAW_FISH.contains(s.getItem()) && !ReelConfig.get().eatRawFish) return false;

@@ -151,6 +151,10 @@ public final class HudRenderer {
 			}
 		}
 
+		for (com.seolwoni.reelassist.config.GoalEntry goal : cfg.goals) {
+			out.add(List.of(new Seg("목표 ", 0xFFFF55FF), new Seg(goal.label + " ", WHITE),
+					new Seg(goal.progress + "/" + goal.target, goal.reached ? GREEN : GRAY)));
+		}
 		double hours = st.fishingTicks / 20.0 / 3600.0;
 		long perHour = hours > 0.01 ? Math.round(totalCatches / hours) : 0;
 		out.add(List.of(new Seg("총 캐스팅: ", GOLD), new Seg(st.casts + "", WHITE)));
@@ -178,6 +182,10 @@ public final class HudRenderer {
 			}
 		}
 		out.add(rod);
+		long timer = com.seolwoni.reelassist.fishing.Goals.timerSecondsLeft();
+		if (timer >= 0) {
+			out.add(List.of(new Seg("타이머 ", GOLD), new Seg(com.seolwoni.reelassist.fishing.Goals.formatTime(timer), WHITE)));
+		}
 		if (BobberFx.isApproaching()) {
 			out.add(List.of(new Seg("물고기 접근 ", 0xFFFFFF55),
 					new Seg(String.format("%.1f칸", BobberFx.approachDistance()), WHITE)));
