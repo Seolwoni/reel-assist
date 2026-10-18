@@ -89,6 +89,9 @@ public final class FishingController {
 
 		if (hookAlive || cfg.macroEnabled) FishingStats.tickFishing();
 
+		if (cfg.macroEnabled && cfg.stopWhenRodRemoved && rodPutAway(player)) {
+			stopMacro("매크로 꺼짐", "낚싯대를 내려놨어요", false);
+		}
 		if (cfg.macroEnabled) {
 			runMacro(mc, player, hookAlive, biting, cfg);
 			lookMovement(player, cfg);
@@ -97,10 +100,39 @@ public final class FishingController {
 			state = State.IDLE;
 			anchored = false;
 		}
+		rememberHand(player);
+	}
+
+	// ------------------------------------------------------------------ rod put away
+
+	private static int lastSlot = -1;
+	private static boolean lastWasRod;
+	private static int lastRemaining;
+
+	private static void rememberHand(LocalPlayer player) {
+		ItemStack hand = player.getMainHandItem();
+		lastSlot = player.getInventory().getSelectedSlot();
+		lastWasRod = isRod(hand);
+		lastRemaining = lastWasRod ? remaining(hand) : 0;
+	}
+
+	/**
+	 * True when the player switched away from the rod or took it out of their hand.
+	 * Slot changes made by the macro itself happen after this check and are already
+	 * remembered, and a rod that just broke from use does not count.
+	 */
+	private static boolean rodPutAway(LocalPlayer player) {
+		if (lastSlot == -1) return false;
+		if (isRod(player.getMainHandItem())) return false;
+		int slot = player.getInventory().getSelectedSlot();
+		if (slot != lastSlot) return true;
+		boolean broke = lastWasRod && lastRemaining <= 2;
+		return lastWasRod && !broke;
 	}
 
 	private static void resetRuntime() {
 		state = State.IDLE;
+		lastSlot = -1;
 		hadHook = false;
 		wasBiting = false;
 		watchSnapshot = null;

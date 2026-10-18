@@ -35,6 +35,8 @@ public class ReelConfig {
 	public int recastTimeoutSec = 60;
 	/** Turn the macro on automatically when the player casts a rod by hand. */
 	public boolean autoStartOnCast = false;
+	/** Turn the macro off when the player switches away from / removes the rod. */
+	public boolean stopWhenRodRemoved = true;
 
 	// ---- Rod ----
 	/** 0 = hand, 1 = hand (protect), 2 = whole hotbar, 3 = whole hotbar (protect). */

@@ -119,6 +119,8 @@ public class ReelConfigScreen extends Screen {
 		}));
 		y += ROW;
 		toggle(left, y, 310, "낚싯대를 던지면 매크로 자동 켜기", () -> c.autoStartOnCast, v -> c.autoStartOnCast = v);
+		y += ROW;
+		toggle(left, y, 310, "낚싯대를 손에서 빼면 매크로 끄기", () -> c.stopWhenRodRemoved, v -> c.stopWhenRodRemoved = v);
 		y += ROW + 4;
 		note("당기기는 물고기를 놓치지 않도록 최대 17틱으로 자동 제한돼요.", y);
 		note("재투척 0초 = 끔. 1틱 = 0.05초", y + 12);
