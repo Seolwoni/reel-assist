@@ -477,6 +477,9 @@ public final class FishingController {
 	}
 
 	public static void stopMacro(String title, String subtitle, boolean alert) {
+		FishingStats fs = FishingStats.session;
+		com.seolwoni.assistcore.log.UsageLog.end("reel", title + (subtitle == null ? "" : " / " + subtitle), "던짐 " + fs.casts + ", 잡음 " + fs.totalCatches() + " (물고기 " + fs.categoryCount(LootCategory.FISH)
+				+ ", 보물 " + fs.categoryCount(LootCategory.TREASURE) + ", 쓰레기 " + fs.categoryCount(LootCategory.JUNK) + ")");
 		ReelConfig cfg = ReelConfig.get();
 		cfg.macroEnabled = false;
 		ReelConfig.save();
@@ -513,6 +516,10 @@ public final class FishingController {
 	}
 
 	public static void onMacroToggled(boolean enabled) {
+		FishingStats fs = FishingStats.session;
+		if (enabled) com.seolwoni.assistcore.log.UsageLog.start("reel", "낚시 매크로 켬, 지금까지 잡은 수 " + fs.totalCatches());
+		else com.seolwoni.assistcore.log.UsageLog.end("reel", "직접 껐어요", "던짐 " + fs.casts + ", 잡음 " + fs.totalCatches() + " (물고기 " + fs.categoryCount(LootCategory.FISH)
+				+ ", 보물 " + fs.categoryCount(LootCategory.TREASURE) + ", 쓰레기 " + fs.categoryCount(LootCategory.JUNK) + ")");
 		state = State.IDLE;
 		anchored = false;
 	}

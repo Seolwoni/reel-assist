@@ -62,17 +62,17 @@ public class ReelRealTest implements FabricClientGameTest {
 				failures.add("biome not found: " + biome);
 				throw new AssertionError("biome not found: " + biome);
 			}
-			RealWorld.goTo(context, sp, b.getX(), b.getZ(), 40);
+			RealWorld.goTo(context, sp, b.getX(), b.getZ(), 72);
 			context.waitTicks(20);
 			// A water column near the biome spot, and the direction with the most water in front of it.
 			int[] spot = sp.getServer().computeOnServer(server -> {
 				ServerLevel level = server.overworld();
 				int best = -1, bx = b.getX(), bz = b.getZ(), by = 0, bd = 0;
-				for (int dx = -24; dx <= 24; dx += 2) {
-					for (int dz = -24; dz <= 24; dz += 2) {
+				for (int dx = -56; dx <= 56; dx += 2) {
+					for (int dz = -56; dz <= 56; dz += 2) {
 						int x = b.getX() + dx, z = b.getZ() + dz;
 						// The water surface (under lily pads, vines or leaves, as in a swamp).
-						int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+						int top = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) - 1;
 						while (top > level.getMinY() && !level.getBlockState(new BlockPos(x, top, z)).is(Blocks.WATER)
 								&& level.getBlockState(new BlockPos(x, top, z)).getFluidState().isEmpty()
 								&& !level.getBlockState(new BlockPos(x, top, z)).isSolidRender()) top--;
