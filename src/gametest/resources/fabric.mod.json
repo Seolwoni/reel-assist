@@ -6,7 +6,8 @@
 	"environment": "client",
 	"entrypoints": {
 		"fabric-client-gametest": [
-			"com.seolwoni.reelassist.gametest.ReelGameTest"
+			"com.seolwoni.reelassist.gametest.ReelGameTest",
+			"com.seolwoni.reelassist.gametest.ReelRealTest"
 		]
 	},
 	"depends": {

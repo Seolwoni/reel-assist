@@ -187,7 +187,11 @@ public final class HudRenderer {
 		if (timer >= 0) {
 			out.add(List.of(new Seg("타이머 ", GOLD), new Seg(com.seolwoni.reelassist.fishing.Goals.formatTime(timer), WHITE)));
 		}
-		if (BobberFx.isApproaching()) {
+		Boolean open = com.seolwoni.reelassist.fishing.OpenWater.bobber();
+		if (open != null) {
+			out.add(List.of(new Seg("물: ", GOLD), open ? new Seg("트인 물 (보물 가능)", GREEN) : new Seg("좁은 물 (보물 안 나와요)", 0xFFFFAA00)));
+		}
+				if (BobberFx.isApproaching()) {
 			out.add(List.of(new Seg("물고기 접근 ", 0xFFFFFF55),
 					new Seg(String.format("%.1f칸", BobberFx.approachDistance()), WHITE)));
 		}
