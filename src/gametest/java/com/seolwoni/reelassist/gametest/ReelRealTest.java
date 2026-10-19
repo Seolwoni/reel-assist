@@ -63,6 +63,7 @@ public class ReelRealTest implements FabricClientGameTest {
 				throw new AssertionError("biome not found: " + biome);
 			}
 			RealWorld.goTo(context, sp, b.getX(), b.getZ(), 40);
+			context.waitTicks(20);
 			// A water column near the biome spot, and the direction with the most water in front of it.
 			int[] spot = sp.getServer().computeOnServer(server -> {
 				ServerLevel level = server.overworld();
@@ -70,7 +71,11 @@ public class ReelRealTest implements FabricClientGameTest {
 				for (int dx = -24; dx <= 24; dx += 2) {
 					for (int dz = -24; dz <= 24; dz += 2) {
 						int x = b.getX() + dx, z = b.getZ() + dz;
+						// The water surface (under lily pads, vines or leaves, as in a swamp).
 						int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+						while (top > level.getMinY() && !level.getBlockState(new BlockPos(x, top, z)).is(Blocks.WATER)
+								&& level.getBlockState(new BlockPos(x, top, z)).getFluidState().isEmpty()
+								&& !level.getBlockState(new BlockPos(x, top, z)).isSolidRender()) top--;
 						if (!level.getBlockState(new BlockPos(x, top, z)).is(Blocks.WATER)) continue;
 						// Shore next to it: a pier from the land is how a player would stand.
 						for (int d = 0; d < 4; d++) {
@@ -78,7 +83,8 @@ public class ReelRealTest implements FabricClientGameTest {
 							int water = 0;
 							for (int k = 1; k <= 12; k++) {
 								BlockPos q = new BlockPos(x, top, z).relative(dir, k);
-								if (level.getBlockState(q).is(Blocks.WATER) && level.getBlockState(q.below()).is(Blocks.WATER)) water++;
+								if (level.getBlockState(q).is(Blocks.WATER) && level.getBlockState(q.below()).is(Blocks.WATER)
+										&& level.getBlockState(q.above()).getCollisionShape(level, q.above()).isEmpty()) water++;
 							}
 							if (water > best) {
 								best = water;
