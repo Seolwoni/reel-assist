@@ -54,13 +54,13 @@ public class ReelConfigScreen extends Screen {
 		addRenderableWidget(Button.builder(toggleText("모드 전체", cfg().modEnabled), b -> {
 			FishingController.setModEnabled(!cfg().modEnabled);
 			rebuildWidgets();
-		}).bounds(left, 22, 150, 20).build());
+		}).bounds(left, 22, 100, 20).build());
 		Button macro = Button.builder(macroText(), b -> {
 			cfg().macroEnabled = !cfg().macroEnabled;
 			FishingController.onMacroToggled(cfg().macroEnabled);
 			ReelConfig.save();
 			b.setMessage(macroText());
-		}).bounds(right, 22, 150, 20).build();
+		}).bounds(left + 105, 22, 100, 20).build();
 		macro.active = cfg().modEnabled;
 		addRenderableWidget(macro);
 
@@ -97,7 +97,7 @@ public class ReelConfigScreen extends Screen {
 		}
 
 		addRenderableWidget(Button.builder(Component.literal("완료"), b -> onClose())
-				.bounds(cx - 75, this.height - 26, 150, 20).build());
+				.bounds(left + 210, 22, 100, 20).build()); // up top: at the bottom it covered the last rows on small screens
 	}
 
 	private Component macroText() {
