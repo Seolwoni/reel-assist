@@ -43,6 +43,8 @@ public final class FishingController {
 	private static boolean bitingFieldLooked;
 
 	private static State state = State.IDLE;
+	/** Storing into a shulker box or an ender chest put down next to us. */
+	private static com.seolwoni.assistcore.storage.PortableStorage boxRun;
 	private static int timer;
 	private static int ticksSinceCast;
 
@@ -100,7 +102,13 @@ public final class FishingController {
 			stopMacro("매크로 꺼짐", "낚싯대를 내려놨어요", false);
 		}
 		if (cfg.macroEnabled) {
-			if (ChestStorage.active()) {
+			if (boxRun != null) {
+				int r = boxRun.tick(mc, player);
+				if (r != com.seolwoni.assistcore.engine.Action.RUN) {
+					boxRun = null;
+					state = State.IDLE;
+				}
+			} else if (ChestStorage.active()) {
 				ChestStorage.tick(mc, player, hookAlive);
 			} else if (AutoEat.active()) {
 				AutoEat.tick(mc, player);
@@ -335,10 +343,15 @@ public final class FishingController {
 				if (--timer > 0) return;
 				if (cfg.lookJitter && lookingAway(cfg)) return; // look back at the water first
 				if (player.getInventory().getFreeSlot() == -1) {
-					if (cfg.storeEnabled && ChestStorage.hasChest()) {
+					var box = cfg.storeEnabled ? com.seolwoni.assistcore.storage.PortableStorage.trip("reel", player, cfg.storeMode,
+							slot -> ChestStorage.shouldStore(player.getInventory().getItem(slot)), null, true) : null;
+					if (box != null) {
+						boxRun = box;
+					} else if (cfg.storeEnabled && ChestStorage.hasChest()) {
 						ChestStorage.start(mc, player);
 					} else {
-						stopMacro("인벤토리 가득 참!", "매크로를 멈췄어요", cfg.fullInvAlert);
+						stopMacro("인벤토리 가득 참!", cfg.storeEnabled && cfg.storeMode != com.seolwoni.assistcore.storage.PortableStorage.CHEST
+								? com.seolwoni.assistcore.storage.PortableStorage.whyNone(player, cfg.storeMode) : "매크로를 멈췄어요", cfg.fullInvAlert);
 					}
 					return;
 				}
@@ -707,6 +720,7 @@ public final class FishingController {
 
 	public static String stateLabel() {
 		if (!ReelConfig.get().macroEnabled) return "꺼짐";
+		if (boxRun != null) return boxRun.label();
 		if (ChestStorage.active()) return ChestStorage.label();
 		if (AutoEat.active()) return AutoEat.label();
 		if (Housekeeping.active()) return Housekeeping.label();

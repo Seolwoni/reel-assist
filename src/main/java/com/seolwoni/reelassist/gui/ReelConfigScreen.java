@@ -280,6 +280,19 @@ public class ReelConfigScreen extends Screen {
 		y += ROW;
 		note(c.chestSet ? "보관 상자: " + c.chestX + ", " + c.chestY + ", " + c.chestZ : "보관 상자: 지정 안 됨", y + 4);
 		y += 18;
+		addRenderableWidget(Button.builder(Component.literal("보관 방식: " + com.seolwoni.assistcore.storage.PortableStorage.LABELS[Math.max(0, Math.min(3, c.storeMode))]), b -> {
+			c.storeMode = (c.storeMode + 1) % 4;
+			ReelConfig.save();
+			rebuildWidgets();
+		}).bounds(left, y, 150, 20).build());
+		addRenderableWidget(Button.builder(Component.literal(switch (c.storeMode) {
+			case 1 -> "옆에 엔더 상자 놓고 담기";
+			case 2 -> "옆에 셜커 놓고 담고 줍기";
+			case 3 -> "엔더 → 셜커 → 상자";
+			default -> "손 닿는 상자에 담기";
+		}), b -> {
+		}).bounds(right, y, 150, 20).build()).active = false;
+		y += ROW;
 		toggle(left, y, 150, "물고기 보관", () -> c.storeFish, v -> c.storeFish = v);
 		toggle(right, y, 150, "보물 보관", () -> c.storeTreasure, v -> c.storeTreasure = v);
 		y += ROW;

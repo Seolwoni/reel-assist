@@ -70,6 +70,8 @@ public class ReelConfig {
 
 	// ---- Chest storage ----
 	public boolean storeEnabled = true;
+	/** 보관 방식: 0 상자, 1 엔더 상자, 2 셜커 상자, 3 자동 (see PortableStorage). */
+	public int storeMode = 0;
 	public boolean chestSet = false;
 	public int chestX, chestY, chestZ;
 	public boolean storeFish = true;
