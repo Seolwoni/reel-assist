@@ -310,6 +310,8 @@ public final class ChestStorage {
 	public static boolean shouldStore(ItemStack stack) {
 		if (stack.isEmpty()) return false;
 		ReelConfig cfg = ReelConfig.get();
+		// Shulker boxes and ender chests carried to store into stay with us.
+		if (cfg.storeMode != com.seolwoni.assistcore.storage.PortableStorage.CHEST && com.seolwoni.assistcore.storage.PortableStorage.isPortable(stack)) return false;
 		if (stack.is(Items.FISHING_ROD)) {
 			// Worn rods: enchanted ones go to the chest; plain ones stay to be combined (unless combining is off).
 			if (!cfg.wornRodsToChest || !Housekeeping.worn(stack, cfg)) return false;
