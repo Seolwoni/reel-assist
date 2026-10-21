@@ -148,9 +148,12 @@ public class ReelRealTest implements FabricClientGameTest {
 			context.takeScreenshot(suite + "-00-start");
 
 			int ticks = 0, shots = 1, openSamples = 0, samples = 0;
-			final int limit = 20 * 60 * (longRun ? 60 : 15);
+			final int limit = 20 * 60 * (longRun ? 90 : 15);
 			boolean on = true;
-			while (on && ticks < limit) {
+			// The long run is an hour of real time (the test machine runs the game at about 60% speed: an hour of game
+			// time took more than the job may run).
+			final long realEnd = System.currentTimeMillis() + 60L * 60 * 1000;
+			while (on && ticks < limit && !(longRun && System.currentTimeMillis() > realEnd)) {
 				long t0 = System.nanoTime();
 				context.waitTicks(40);
 				timing.add(System.nanoTime() - t0);
@@ -177,7 +180,7 @@ public class ReelRealTest implements FabricClientGameTest {
 						+ " junk=" + st.categoryCount(LootCategory.JUNK) + " other=" + st.categoryCount(LootCategory.OTHER));
 				for (FishingStats.Entry e : st.entries.values()) log.add("  " + e.category + " " + e.name + " x" + e.count);
 				if (!wasOn) failures.add("macro turned itself off: " + FishingController.lastStop);
-				if (st.totalCatches() < (longRun ? 60 : 15)) failures.add("only " + st.totalCatches() + " catches in " + (longRun ? 60 : 15) + " minutes");
+				if (st.totalCatches() < (longRun ? 50 : 15)) failures.add("only " + st.totalCatches() + " catches in " + playedTicks / 20 / 60 + " game minutes");
 				if (st.casts < st.totalCatches()) failures.add("fewer casts than catches");
 				ReelConfig.get().macroEnabled = false;
 				FishingController.onMacroToggled(false);
