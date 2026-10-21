@@ -561,6 +561,25 @@ public final class FishingController {
 
 		if (cfg.rodMode <= 1) {
 			if (!isRod(hand)) {
+				// The rod in hand just broke (or wore down): take the next one, from the hotbar or the inventory (a
+				// spare carried along, or one fetched from the chest), like a player would. Only when there is none: stop.
+				int spare = -1;
+				for (int i = 0; i < 36 && spare < 0; i++) {
+					ItemStack s = inv.getItem(i);
+					if (isRod(s) && (!protect || remaining(s) > limit)) spare = i;
+				}
+				Minecraft mc = Minecraft.getInstance();
+				if (spare >= 0 && spare < 9) {
+					inv.setSelectedSlot(spare);
+					lastSlot = spare;
+					return false; // cast on the next round, with the new rod in hand
+				}
+				if (spare >= 9 && com.seolwoni.assistcore.util.InvBase.canClick(mc, player)) {
+					com.seolwoni.assistcore.util.InvBase.swapToHotbar(mc, player, spare, inv.getSelectedSlot());
+					return false;
+				}
+			}
+			if (!isRod(hand)) {
 				stopMacro("낚싯대가 없어요", "손에 낚싯대를 들어주세요", true);
 				return false;
 			}
