@@ -169,13 +169,14 @@ public class ReelRealTest implements FabricClientGameTest {
 			}
 			context.takeScreenshot(suite + "-99-end");
 			final boolean wasOn = on;
+			final int playedTicks = ticks;
 			context.runOnClient(mc -> {
 				FishingStats st = FishingStats.session;
-				log.add("after " + (longRun ? "60" : "15") + " min: casts=" + st.casts + " catches=" + st.totalCatches() + " macro on=" + wasOn);
+				log.add("after " + playedTicks / 20 / 60 + " game minutes: casts=" + st.casts + " catches=" + st.totalCatches() + " macro on=" + wasOn);
 				log.add("fish=" + st.categoryCount(LootCategory.FISH) + " treasure=" + st.categoryCount(LootCategory.TREASURE)
 						+ " junk=" + st.categoryCount(LootCategory.JUNK) + " other=" + st.categoryCount(LootCategory.OTHER));
 				for (FishingStats.Entry e : st.entries.values()) log.add("  " + e.category + " " + e.name + " x" + e.count);
-				if (!wasOn) failures.add("macro turned itself off: " + FishingController.stateLabel());
+				if (!wasOn) failures.add("macro turned itself off: " + FishingController.lastStop);
 				if (st.totalCatches() < (longRun ? 60 : 15)) failures.add("only " + st.totalCatches() + " catches in " + (longRun ? 60 : 15) + " minutes");
 				if (st.casts < st.totalCatches()) failures.add("fewer casts than catches");
 				ReelConfig.get().macroEnabled = false;

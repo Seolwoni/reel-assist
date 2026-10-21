@@ -489,7 +489,11 @@ public final class FishingController {
 		return min + RANDOM.nextInt(max - min + 1);
 	}
 
+	/** Why the macro last stopped (title / subtitle), for the tests and the usage log. */
+	public static String lastStop = "";
+
 	public static void stopMacro(String title, String subtitle, boolean alert) {
+		lastStop = (title == null ? "" : title) + (subtitle == null ? "" : " / " + subtitle);
 		FishingStats fs = FishingStats.session;
 		com.seolwoni.assistcore.log.UsageLog.end("reel", title + (subtitle == null ? "" : " / " + subtitle), "던짐 " + fs.casts + ", 잡음 " + fs.totalCatches() + " (물고기 " + fs.categoryCount(LootCategory.FISH)
 				+ ", 보물 " + fs.categoryCount(LootCategory.TREASURE) + ", 쓰레기 " + fs.categoryCount(LootCategory.JUNK) + ")");
