@@ -34,7 +34,11 @@ public class ReelRealTest implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
-		String suite = RealWorld.suite();
+		String run = RealWorld.suite();
+		// "-long": an hour on the same pier, storing in a chest beside it, rods fetched from it as they wear out;
+		// at the end every catch is counted: in the chest or the inventory, or lost.
+		boolean longRun = run.endsWith("-long");
+		String suite = run.replace("-long", "");
 		ResourceKey<Biome> biome;
 		String seed;
 		switch (suite) {
@@ -111,6 +115,12 @@ public class ReelRealTest implements FabricClientGameTest {
 			RealWorld.cmd(sp, "tp @a " + (px + 0.5) + " " + (py + 1) + " " + (pz + 0.5) + " " + yaw + " 25");
 			RealWorld.cmd(sp, "give @a minecraft:fishing_rod");
 			RealWorld.cmd(sp, "give @a minecraft:bread 16");
+			final BlockPos chestPos = mid.relative(dir.getClockWise(), 1).above();
+			if (longRun) {
+				RealWorld.cmd(sp, "setblock " + chestPos.getX() + " " + chestPos.getY() + " " + chestPos.getZ() + " minecraft:chest");
+				for (int k = 0; k < 4; k++)
+					RealWorld.cmd(sp, "item replace block " + chestPos.getX() + " " + chestPos.getY() + " " + chestPos.getZ() + " container." + k + " with minecraft:fishing_rod");
+			}
 			RealWorld.cmd(sp, "effect give @a minecraft:saturation infinite 0 true");
 			log.add(biome + " (seed " + seed + "): pier at " + px + ", " + (py + 1) + ", " + pz + " facing " + dir + " (" + spot[4] + " water blocks ahead)");
 			context.waitTicks(40);
@@ -119,8 +129,18 @@ public class ReelRealTest implements FabricClientGameTest {
 			context.runOnClient(mc -> {
 				ReelConfig c = ReelConfig.get();
 				c.modEnabled = true;
-				c.storeEnabled = false;
+				c.storeEnabled = longRun;
 				c.timerEnabled = false;
+				if (longRun) {
+					c.chestSet = true;
+					c.chestX = chestPos.getX();
+					c.chestY = chestPos.getY();
+					c.chestZ = chestPos.getZ();
+					c.storeMode = 0;
+					c.storeOther = true;
+					c.discardEnabled = false; // every catch has to be found again at the end
+					c.eatRawFish = false;
+				}
 				mc.player.getInventory().setSelectedSlot(0);
 				c.macroEnabled = true;
 				FishingController.onMacroToggled(true);
@@ -128,7 +148,7 @@ public class ReelRealTest implements FabricClientGameTest {
 			context.takeScreenshot(suite + "-00-start");
 
 			int ticks = 0, shots = 1, openSamples = 0, samples = 0;
-			final int limit = 20 * 60 * 15;
+			final int limit = 20 * 60 * (longRun ? 60 : 15);
 			boolean on = true;
 			while (on && ticks < limit) {
 				long t0 = System.nanoTime();
@@ -145,22 +165,62 @@ public class ReelRealTest implements FabricClientGameTest {
 						+ " casts=" + FishingStats.session.casts + " catches=" + FishingStats.session.totalCatches()
 						+ " open=" + OpenWater.bobber()));
 				on = context.computeOnClient(mc -> ReelConfig.get().macroEnabled);
-				if (ticks % 600 == 0) context.takeScreenshot(String.format("%s-%03d-s%d", suite, shots++, ticks / 20));
+				if (ticks % (longRun ? 6000 : 600) == 0) context.takeScreenshot(String.format("%s-%03d-s%d", suite, shots++, ticks / 20));
 			}
 			context.takeScreenshot(suite + "-99-end");
 			final boolean wasOn = on;
 			context.runOnClient(mc -> {
 				FishingStats st = FishingStats.session;
-				log.add("after " + "15 min: casts=" + st.casts + " catches=" + st.totalCatches() + " macro on=" + wasOn);
+				log.add("after " + (longRun ? "60" : "15") + " min: casts=" + st.casts + " catches=" + st.totalCatches() + " macro on=" + wasOn);
 				log.add("fish=" + st.categoryCount(LootCategory.FISH) + " treasure=" + st.categoryCount(LootCategory.TREASURE)
 						+ " junk=" + st.categoryCount(LootCategory.JUNK) + " other=" + st.categoryCount(LootCategory.OTHER));
 				for (FishingStats.Entry e : st.entries.values()) log.add("  " + e.category + " " + e.name + " x" + e.count);
 				if (!wasOn) failures.add("macro turned itself off: " + FishingController.stateLabel());
-				if (st.totalCatches() < 15) failures.add("only " + st.totalCatches() + " catches in 15 minutes");
+				if (st.totalCatches() < (longRun ? 60 : 15)) failures.add("only " + st.totalCatches() + " catches in " + (longRun ? 60 : 15) + " minutes");
 				if (st.casts < st.totalCatches()) failures.add("fewer casts than catches");
 				ReelConfig.get().macroEnabled = false;
 				FishingController.onMacroToggled(false);
 			});
+			if (longRun) {
+				// Every catch accounted for: items now in the chest and the inventory, minus what we started with
+				// (bread, rods), against the catches counted (fishing rods caught as treasure are left out on both sides).
+				long caughtRods = context.computeOnClient(mc -> FishingStats.session.entries.values().stream()
+						.filter(e -> e.name.toLowerCase().contains("rod") || e.name.contains("낚싯대")).mapToLong(e -> e.count).sum());
+				long catches = context.computeOnClient(mc -> FishingStats.session.totalCatches());
+				int[] held = context.computeOnClient(mc -> {
+					int n = 0, rods = 0;
+					for (int i = 0; i < 36; i++) {
+						var st = mc.player.getInventory().getItem(i);
+						if (st.isEmpty() || st.is(net.minecraft.world.item.Items.BREAD)) continue;
+						if (st.is(net.minecraft.world.item.Items.FISHING_ROD)) rods++;
+						else n += st.getCount();
+					}
+					var off = mc.player.getOffhandItem();
+					if (!off.isEmpty() && !off.is(net.minecraft.world.item.Items.FISHING_ROD)) n += off.getCount();
+					return new int[] {n, rods};
+				});
+				int[] boxed = sp.getServer().computeOnServer(server -> {
+					int n = 0, rods = 0, trips = 0;
+					if (server.overworld().getBlockEntity(chestPos) instanceof net.minecraft.world.Container ct) {
+						for (int i = 0; i < ct.getContainerSize(); i++) {
+							var st = ct.getItem(i);
+							if (st.isEmpty()) continue;
+							if (st.is(net.minecraft.world.item.Items.FISHING_ROD)) rods++;
+							else n += st.getCount();
+						}
+					}
+					return new int[] {n, rods};
+				});
+				long found = held[0] + boxed[0];
+				long expected = catches - caughtRods;
+				long lost = Math.max(0, expected - found);
+				log.add("LOSS: catches " + catches + " (rods among them " + caughtRods + "), found " + found + " (chest " + boxed[0] + ", inventory " + held[0] + "), missing " + lost
+						+ " | rods: inventory " + held[1] + ", chest " + boxed[1]);
+				log.add("items on the ground near the pier: " + sp.getServer().computeOnServer(server -> server.overworld().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+						new net.minecraft.world.phys.AABB(chestPos).inflate(12)).size()));
+				if (lost > 0) failures.add(lost + " of " + expected + " catches lost");
+				if (boxed[0] == 0) failures.add("nothing was stored in the chest in an hour");
+			}
 			log.add("bobber in open water in " + openSamples + " of " + samples + " checks"
 					+ (samples > 0 ? String.format(" (%.0f%%)", openSamples * 100.0 / samples) : ""));
 			log.add(timing.summary() + ", server tick " + String.format("%.1f", RealWorld.mspt(sp)) + " ms");
