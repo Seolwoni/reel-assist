@@ -122,8 +122,12 @@ public class ReelRealTest implements FabricClientGameTest {
 			else RealWorld.cmd(sp, "give @a minecraft:fishing_rod");
 			RealWorld.cmd(sp, "give @a minecraft:bread 16");
 			if (full) {
-				// 24 stacks of cobblestone: two free slots left.
-				for (int i = 0; i < 24; i++) RealWorld.cmd(sp, "give @a minecraft:cobblestone 64");
+				// Like after a long time fishing: 32 stacks of catches (fish and junk) from before, two free slots left
+				// (with the rod and the bread). They are stored too; the start count is taken off at the end.
+				String[] kinds = {"cod", "cod", "cod", "cod", "cod", "cod", "cod", "cod", "salmon", "salmon", "salmon", "salmon", "salmon", "salmon", "salmon", "salmon",
+						"tropical_fish", "tropical_fish", "tropical_fish", "tropical_fish", "pufferfish", "pufferfish", "pufferfish", "pufferfish", "leather", "leather",
+						"bowl", "bowl", "string", "string", "stick", "stick"};
+				for (String k : kinds) RealWorld.cmd(sp, "give @a minecraft:" + k + " 64");
 			}
 			if (rain) RealWorld.cmd(sp, "weather rain");
 			if (night) RealWorld.cmd(sp, "time set midnight");
@@ -153,7 +157,7 @@ public class ReelRealTest implements FabricClientGameTest {
 					c.chestY = chestPos.getY();
 					c.chestZ = chestPos.getZ();
 					c.storeMode = 0;
-					c.storeOther = !full; // "-full": the cobblestone is ours, it stays in the inventory
+					c.storeOther = true;
 					c.discardEnabled = false; // every catch has to be found again at the end
 					c.eatRawFish = false;
 				}
@@ -214,7 +218,7 @@ public class ReelRealTest implements FabricClientGameTest {
 					int n = 0, rods = 0;
 					for (int i = 0; i < 36; i++) {
 						var st = mc.player.getInventory().getItem(i);
-						if (st.isEmpty() || st.is(net.minecraft.world.item.Items.BREAD) || st.is(net.minecraft.world.item.Items.COBBLESTONE)) continue;
+						if (st.isEmpty() || st.is(net.minecraft.world.item.Items.BREAD)) continue;
 						if (st.is(net.minecraft.world.item.Items.FISHING_ROD)) rods++;
 						else n += st.getCount();
 					}
@@ -234,7 +238,7 @@ public class ReelRealTest implements FabricClientGameTest {
 					}
 					return new int[] {n, rods};
 				});
-				long found = held[0] + boxed[0];
+				long found = held[0] + boxed[0] - (full ? 32L * 64 : 0); // the catches given at the start
 				long expected = catches - caughtRods;
 				long lost = Math.max(0, expected - found);
 				log.add("LOSS: catches " + catches + " (rods among them " + caughtRods + "), found " + found + " (chest " + boxed[0] + ", inventory " + held[0] + "), missing " + lost
