@@ -560,9 +560,10 @@ public final class FishingController {
 		int limit = protect ? cfg.protectDurability : 0;
 
 		if (cfg.rodMode <= 1) {
-			if (!isRod(hand)) {
-				// The rod in hand just broke (or wore down): take the next one, from the hotbar or the inventory (a
-				// spare carried along, or one fetched from the chest), like a player would. Only when there is none: stop.
+			if (!isRod(hand) || (protect && remaining(hand) <= limit)) {
+				// The rod in hand just broke, or is down to the protection limit: take the next usable one, from the hotbar
+				// or the inventory (a spare carried along, or one fetched from the chest), like a player would. Only when
+				// there is none: stop. (The worn rod stays in the inventory, it is never broken.)
 				int spare = -1;
 				for (int i = 0; i < 36 && spare < 0; i++) {
 					ItemStack s = inv.getItem(i);
