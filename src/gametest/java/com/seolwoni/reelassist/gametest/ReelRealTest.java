@@ -132,7 +132,15 @@ public class ReelRealTest implements FabricClientGameTest {
 			if (rain) RealWorld.cmd(sp, "weather rain");
 			if (night) RealWorld.cmd(sp, "time set midnight");
 			final BlockPos chestPos = mid.relative(dir.getClockWise(), 1).above();
-			if (chest) {
+			if (chest && full) {
+				// A double chest: room for the 32 stacks from before and the new catches.
+				BlockPos second = chestPos.relative(dir.getOpposite());
+				RealWorld.cmd(sp, "setblock " + second.getX() + " " + (second.getY() - 1) + " " + second.getZ() + " minecraft:oak_planks");
+				RealWorld.cmd(sp, "fill " + second.getX() + " " + second.getY() + " " + second.getZ() + " " + second.getX() + " " + (second.getY() + 1) + " " + second.getZ() + " minecraft:air");
+				String f1 = dir.getClockWise().getSerializedName();
+				RealWorld.cmd(sp, "setblock " + chestPos.getX() + " " + chestPos.getY() + " " + chestPos.getZ() + " minecraft:chest[facing=" + f1 + ",type=left]");
+				RealWorld.cmd(sp, "setblock " + second.getX() + " " + second.getY() + " " + second.getZ() + " minecraft:chest[facing=" + f1 + ",type=right]");
+			} else if (chest) {
 				RealWorld.cmd(sp, "setblock " + chestPos.getX() + " " + chestPos.getY() + " " + chestPos.getZ() + " minecraft:chest");
 				for (int k = 0; k < 4; k++)
 					RealWorld.cmd(sp, "item replace block " + chestPos.getX() + " " + chestPos.getY() + " " + chestPos.getZ() + " container." + k + " with minecraft:fishing_rod");
@@ -150,6 +158,8 @@ public class ReelRealTest implements FabricClientGameTest {
 				if (protect) {
 					c.rodMode = 1;
 					c.protectDurability = 5;
+					// Worn rods are otherwise combined into one (that is not a rod breaking): keep them apart to count.
+					c.combineRods = false;
 				}
 				if (chest) {
 					c.chestSet = true;
@@ -228,7 +238,8 @@ public class ReelRealTest implements FabricClientGameTest {
 				});
 				int[] boxed = sp.getServer().computeOnServer(server -> {
 					int n = 0, rods = 0, trips = 0;
-					if (server.overworld().getBlockEntity(chestPos) instanceof net.minecraft.world.Container ct) {
+					for (BlockPos cp : full ? List.of(chestPos, chestPos.relative(dir.getOpposite())) : List.of(chestPos)) {
+						if (!(server.overworld().getBlockEntity(cp) instanceof net.minecraft.world.Container ct)) continue;
 						for (int i = 0; i < ct.getContainerSize(); i++) {
 							var st = ct.getItem(i);
 							if (st.isEmpty()) continue;
