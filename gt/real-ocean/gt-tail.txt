@@ -1,0 +1,200 @@
+[17:19:52] [Render thread/INFO] (Minecraft) Created: 128x64x0 minecraft:textures/atlas/map_decorations.png-atlas
+[17:19:52] [Render thread/INFO] (Minecraft) Created: 512x512x0 minecraft:textures/atlas/shulker_boxes.png-atlas
+[17:19:52] [Download-1/INFO] (Minecraft) Could not authorize you against Realms server: java.lang.RuntimeException: Failed to parse into SignedJWT: FabricMC
+[17:19:55] [Render thread/INFO] (Minecraft) Loaded 1585 recipes
+[17:19:55] [Render thread/INFO] (Minecraft) Loaded 1688 advancements
+[17:19:55] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.GenericMessageScreen@6ef0e821
+[17:19:56] [Render thread/INFO] (BiomeModificationImpl) Applied 0 biome modifications to 0 of 66 new biomes in 955.4 μs
+[17:19:56] [Server thread/INFO] (Minecraft) Starting integrated minecraft server version 26.2
+[17:19:56] [Server thread/INFO] (Minecraft) Generating keypair
+[17:19:56] [Server thread/INFO] (Minecraft) Selecting global world spawn...
+[17:19:59] [Server thread/INFO] (Minecraft) Loading 0 persistent chunks...
+[17:19:59] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[17:19:59] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[17:19:59] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[17:19:59] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[17:19:59] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (world): All chunks are saved
+[17:19:59] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[17:19:59] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[17:19:59] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage: All dimensions are saved
+[17:19:59] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:19:59] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:19:59] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:19:59] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:19:59] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:19:59] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:19:59] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:19:59] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Server thread/INFO] (Minecraft) Loading 47 chunks for player spawn...
+[17:20:00] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[17:20:00] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:00] [Server thread/INFO] (Minecraft) Preparing spawn area: 16%
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Server thread/INFO] (Minecraft) Preparing spawn area: 29%
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:01] [Server thread/INFO] (Minecraft) Preparing spawn area: 29%
+[17:20:02] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:02] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:02] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:02] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:02] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:02] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:02] [Server thread/INFO] (Minecraft) Preparing spawn area: 55%
+[17:20:02] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:02] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:02] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:02] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:02] [Server thread/INFO] (Minecraft) Preparing spawn area: 57%
+[17:20:02] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:03] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:03] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:03] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:03] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:03] [Server thread/INFO] (Minecraft) Preparing spawn area: 57%
+[17:20:03] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:03] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:03] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:03] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:03] [Server thread/INFO] (Minecraft) Time elapsed: 7412 ms
+[17:20:03] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:03] [Server thread/INFO] (Minecraft) Player0[local:E:e6ea4a18] logged in with entity id 39 at (-1.5, 102.0, 9.5)
+[17:20:03] [Server thread/INFO] (Minecraft) Player0 joined the game
+[17:20:04] [Server thread/INFO] (Minecraft) Changing view distance to 5, from 10
+[17:20:04] [Server thread/INFO] (Minecraft) Changing simulation distance to 12, from 0
+[17:20:04] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: null screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:04] [Render thread/INFO] (Minecraft) Loaded 2 advancements
+[17:20:04] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: ClientLevel screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:04] [Download-1/ERROR] (Minecraft) Failed to retrieve profile key pair
+
+MinecraftClientHttpException[type=HTTP_ERROR, status=401, response=ErrorResponse[path=/player/certificates, error=null, errorMessage=null, details=null]]
+	at knot//com.mojang.authlib.minecraft.client.MinecraftClient.buildHttpException(MinecraftClient.java:170)
+	at knot//com.mojang.authlib.minecraft.client.MinecraftClient.readServiceResponse(MinecraftClient.java:147)
+	at knot//com.mojang.authlib.minecraft.client.MinecraftClient.post(MinecraftClient.java:89)
+	at knot//com.mojang.authlib.yggdrasil.YggdrasilUserApiService.getKeyPair(YggdrasilUserApiService.java:62)
+	at knot//net.minecraft.client.multiplayer.AccountProfileKeyPairManager.fetchProfileKeyPair(AccountProfileKeyPairManager.java:128)
+	at knot//net.minecraft.client.multiplayer.AccountProfileKeyPairManager.lambda$readOrFetchProfileKeyPair$0(AccountProfileKeyPairManager.java:77)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1789)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+[17:20:04] [Render thread/INFO] (Minecraft) Resizing Dynamic Transforms UBO, capacity limit of 2 reached during a single frame. New capacity will be 4.
+[17:20:04] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: ClientLevel screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:04] [Render thread/INFO] (Minecraft) Resizing Dynamic Transforms UBO, capacity limit of 4 reached during a single frame. New capacity will be 8.
+[17:20:04] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: ClientLevel screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:04] [Render thread/INFO] (Minecraft) Resizing Dynamic Transforms UBO, capacity limit of 8 reached during a single frame. New capacity will be 16.
+[17:20:04] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: ClientLevel screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:04] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: ClientLevel screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:05] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: ClientLevel screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:05] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 2 reached during a single frame. New capacity will be 8.
+[17:20:05] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: ClientLevel screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:05] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: ClientLevel screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:05] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 8 reached during a single frame. New capacity will be 16.
+[17:20:05] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: ClientLevel screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:05] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: ClientLevel screen: net.minecraft.client.gui.screens.LevelLoadingScreen@5db867ee
+[17:20:05] [Render thread/INFO] (fabric-client-gametest-api-v1) World loading finished: ClientLevel screen: null
+[17:20:06] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 16 reached during a single frame. New capacity will be 32.
+[17:20:06] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 3295ms or 65 ticks behind
+[17:20:07] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 32 reached during a single frame. New capacity will be 64.
+[17:20:10] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 64 reached during a single frame. New capacity will be 128.
+[17:20:10] [Server thread/INFO] (Minecraft) The difficulty did not change; it is already set to Peaceful
+[17:20:10] [Server thread/INFO] (Minecraft) Set minecraft:overworld to time marker minecraft:noon
+[17:20:10] [Server thread/INFO] (Minecraft) Set the weather to clear
+[17:20:10] [Server thread/INFO] (Minecraft) No items were found on player Player0
+[17:20:10] [Server thread/INFO] (Minecraft) Target has no effects to remove
+[17:20:14] [Server thread/INFO] (Minecraft) Marked 100 chunks in minecraft:overworld from [-13, 5] to [-4, 14] to be force loaded
+[17:20:14] [Server thread/INFO] (Minecraft) Teleported Player0 to -127.500000, 63.000000, 160.500000
+[17:20:14] [Render thread/INFO] (Minecraft) Loaded 12 advancements
+[17:20:17] [Server thread/INFO] (Minecraft) Changed the block at -183, 62, 110
+[17:20:17] [Server thread/INFO] (Minecraft) No blocks were filled
+[17:20:17] [Server thread/INFO] (Minecraft) Changed the block at -184, 62, 110
+[17:20:17] [Server thread/INFO] (Minecraft) No blocks were filled
+[17:20:17] [Server thread/INFO] (Minecraft) Changed the block at -185, 62, 110
+[17:20:17] [Server thread/INFO] (Minecraft) No blocks were filled
+[17:20:17] [Server thread/INFO] (Minecraft) Teleported Player0 to -183.500000, 63.000000, 110.500000
+[17:20:17] [Server thread/INFO] (Minecraft) Gave 1 [Fishing Rod] to Player0
+[17:20:17] [Server thread/INFO] (Minecraft) Gave 16 [Bread] to Player0
+[17:20:17] [Server thread/INFO] (Minecraft) Applied effect Saturation to Player0
+[17:20:20] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 128 reached during a single frame. New capacity will be 256.
+[17:20:26] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 4988ms or 99 ticks behind
+[17:20:36] [Server thread/INFO] (Minecraft) Player0 has made the advancement [Fishy Business]
+[17:20:36] [Render thread/INFO] (Minecraft) [System] [CHAT] Player0 has made the advancement [Fishy Business]
+[17:20:36] [Render thread/INFO] (Minecraft) Loaded 16 advancements
+[17:20:37] [Render thread/INFO] (Minecraft) Loaded 19 advancements
+[17:20:51] [Render thread/INFO] (Minecraft) Resizing Chunk Sections UBO, capacity limit of 256 reached during a single frame. New capacity will be 512.
+[17:20:51] [Render thread/INFO] (Minecraft) Resizing Dynamic Transforms UBO, capacity limit of 16 reached during a single frame. New capacity will be 32.
+[17:21:35] [Render thread/INFO] (Minecraft) Loaded 22 advancements
+[17:26:14] [Render thread/INFO] (Minecraft) Loaded 31 advancements
+[17:28:06] [Render thread/INFO] (Minecraft) Loaded 33 advancements
+[17:29:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 2006ms or 40 ticks behind
+[17:30:19] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15006ms or 300 ticks behind
+[17:30:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15006ms or 300 ticks behind
+[17:31:19] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15006ms or 300 ticks behind
+[17:31:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15006ms or 300 ticks behind
+[17:32:19] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15006ms or 300 ticks behind
+[17:32:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15006ms or 300 ticks behind
+[17:33:19] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15006ms or 300 ticks behind
+[17:33:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15007ms or 300 ticks behind
+[17:34:19] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15007ms or 300 ticks behind
+[17:34:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15007ms or 300 ticks behind
+[17:35:19] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15007ms or 300 ticks behind
+[17:35:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15007ms or 300 ticks behind
+[17:36:19] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15007ms or 300 ticks behind
+[17:36:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15007ms or 300 ticks behind
+[17:37:19] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15007ms or 300 ticks behind
+[17:37:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15007ms or 300 ticks behind
+[17:38:19] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15007ms or 300 ticks behind
+[17:38:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15008ms or 300 ticks behind
+[17:39:19] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15008ms or 300 ticks behind
+[17:39:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15008ms or 300 ticks behind
+[17:40:19] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15008ms or 300 ticks behind
+[17:40:49] [Server thread/WARN] (Minecraft) Can't keep up! Is the server overloaded? Running 15008ms or 300 ticks behind
+[17:41:02] [Server thread/INFO] (Minecraft) Player0 lost connection: Disconnected
+[17:41:02] [Server thread/INFO] (Minecraft) Player0 left the game
+[17:41:02] [Server thread/INFO] (Minecraft) Stopping singleplayer server as player logged out
+[17:41:02] [Server thread/INFO] (Minecraft) Stopping server
+[17:41:02] [Server thread/INFO] (Minecraft) Saving players
+[17:41:02] [Server thread/INFO] (Minecraft) Saving worlds
+[17:41:02] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[17:41:03] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[17:41:03] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[17:41:03] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (world): All chunks are saved
+[17:41:03] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[17:41:03] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[17:41:03] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage: All dimensions are saved
+[17:41:03] [Render thread/ERROR] (Minecraft) ########## GL ERROR ##########
+[17:41:03] [Render thread/ERROR] (Minecraft) @ Render
+[17:41:03] [Render thread/ERROR] (Minecraft) 65547: X11: Standard cursor shape unavailable
+[17:41:03] [Render thread/INFO] (Minecraft) Stopping!
+
+BUILD SUCCESSFUL in 21m 24s
+14 actionable tasks: 6 executed, 8 up-to-date
+Configuration cache entry stored.
