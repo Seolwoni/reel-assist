@@ -61,7 +61,7 @@ public final class AutoEat {
 		if (slot == -1) {
 			if (!warnedNoFood) {
 				warnedNoFood = true;
-				Alerts.title("배고파요", "핫바에 먹을 음식이 없어요", 0xFFFFAA00);
+				Alerts.title(com.seolwoni.assistcore.i18n.Tr.t("배고파요"), com.seolwoni.assistcore.i18n.Tr.t("핫바에 먹을 음식이 없어요"), 0xFFFFAA00);
 				Alerts.warning();
 			}
 			return false;
@@ -152,6 +152,6 @@ public final class AutoEat {
 	}
 
 	public static String label() {
-		return "먹는 중";
+		return com.seolwoni.assistcore.i18n.Tr.t("먹는 중");
 	}
 }

@@ -68,19 +68,19 @@ public final class ChestStorage {
 		ReelConfig cfg = ReelConfig.get();
 		HitResult hit = mc.hitResult;
 		if (!(hit instanceof BlockHitResult bhr) || hit.getType() != HitResult.Type.BLOCK || mc.level == null) {
-			Alerts.actionBar("상자를 바라보고 눌러주세요", 0xFFFF5555);
+			Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("상자를 바라보고 눌러주세요"), 0xFFFF5555);
 			return;
 		}
 		BlockPos pos = bhr.getBlockPos();
 		BlockEntity be = mc.level.getBlockEntity(pos);
 		if (!(be instanceof Container)) {
-			Alerts.actionBar("상자나 통 같은 보관함이 아니에요", 0xFFFF5555);
+			Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("상자나 통 같은 보관함이 아니에요"), 0xFFFF5555);
 			return;
 		}
 		if (cfg.chestSet && cfg.chestX == pos.getX() && cfg.chestY == pos.getY() && cfg.chestZ == pos.getZ()) {
 			cfg.chestSet = false;
 			ReelConfig.save();
-			Alerts.actionBar("보관 상자 지정 해제");
+			Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("보관 상자 지정 해제"));
 			Alerts.click();
 			return;
 		}
@@ -89,7 +89,7 @@ public final class ChestStorage {
 		cfg.chestY = pos.getY();
 		cfg.chestZ = pos.getZ();
 		ReelConfig.save();
-		Alerts.actionBar("보관 상자 지정: " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ(), 0xFF55FF55);
+		Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("보관 상자 지정: ") + pos.getX() + ", " + pos.getY() + ", " + pos.getZ(), 0xFF55FF55);
 		Alerts.click();
 	}
 
@@ -105,11 +105,11 @@ public final class ChestStorage {
 		if (!hasChest()) return false;
 		BlockPos pos = chestPos();
 		if (mc.level == null || !(mc.level.getBlockEntity(pos) instanceof Container)) {
-			FishingController.stopMacro("보관 상자가 없어요", "상자를 다시 지정해주세요", true);
+			FishingController.stopMacro(com.seolwoni.assistcore.i18n.Tr.t("보관 상자가 없어요"), com.seolwoni.assistcore.i18n.Tr.t("상자를 다시 지정해주세요"), true);
 			return false;
 		}
 		if (player.getEyePosition().distanceTo(Vec3.atCenterOf(pos)) > REACH) {
-			FishingController.stopMacro("보관 상자가 멀어요", "손이 닿는 거리에 두세요", true);
+			FishingController.stopMacro(com.seolwoni.assistcore.i18n.Tr.t("보관 상자가 멀어요"), com.seolwoni.assistcore.i18n.Tr.t("손이 닿는 거리에 두세요"), true);
 			return false;
 		}
 		savedYaw = player.getYRot();
@@ -164,12 +164,12 @@ public final class ChestStorage {
 					step = Step.MOVE;
 					return;
 				}
-				if (--waitTicks <= 0) fail("상자를 열지 못했어요", "막혀 있는지 확인해주세요");
+				if (--waitTicks <= 0) fail(com.seolwoni.assistcore.i18n.Tr.t("상자를 열지 못했어요"), com.seolwoni.assistcore.i18n.Tr.t("막혀 있는지 확인해주세요"));
 			}
 			case MOVE -> {
 				AbstractContainerScreen<?> screen = openContainer(mc);
 				if (screen == null) {
-					fail("상자가 닫혔어요", "보관을 멈췄어요");
+					fail(com.seolwoni.assistcore.i18n.Tr.t("상자가 닫혔어요"), com.seolwoni.assistcore.i18n.Tr.t("보관을 멈췄어요"));
 					return;
 				}
 				if (--timer > 0) return;
@@ -203,11 +203,11 @@ public final class ChestStorage {
 				step = Step.NONE;
 				FishingController.resetLook();
 				if (chestFull) {
-					FishingController.stopMacro("보관 상자가 가득 찼어요", "상자를 비워주세요", true);
+					FishingController.stopMacro(com.seolwoni.assistcore.i18n.Tr.t("보관 상자가 가득 찼어요"), com.seolwoni.assistcore.i18n.Tr.t("상자를 비워주세요"), true);
 				} else if (player.getInventory().getFreeSlot() == -1) {
-					FishingController.stopMacro("인벤토리 가득 참!", "보관할 아이템이 없어요", ReelConfig.get().fullInvAlert);
+					FishingController.stopMacro(com.seolwoni.assistcore.i18n.Tr.t("인벤토리 가득 참!"), com.seolwoni.assistcore.i18n.Tr.t("보관할 아이템이 없어요"), ReelConfig.get().fullInvAlert);
 				} else {
-					Alerts.actionBar("보관 " + moved + "칸" + (taken > 0 ? ", 꺼냄 " + taken + "칸" : ""), 0xFF55FF55);
+					Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("보관 ") + moved + com.seolwoni.assistcore.i18n.Tr.t("칸") + (taken > 0 ? com.seolwoni.assistcore.i18n.Tr.t(", 꺼냄 ") + taken + com.seolwoni.assistcore.i18n.Tr.t("칸") : ""), 0xFF55FF55);
 				}
 			}
 		}
@@ -375,6 +375,6 @@ public final class ChestStorage {
 	}
 
 	public static String label() {
-		return "보관 중";
+		return com.seolwoni.assistcore.i18n.Tr.t("보관 중");
 	}
 }

@@ -8,10 +8,10 @@ import net.minecraft.world.item.Items;
 
 /** Vanilla fishing loot groups. Anything else (e.g. custom server items) is OTHER. */
 public enum LootCategory {
-	FISH("물고기", 0xFF55FFFF),
-	TREASURE("보물", 0xFFFFAA00),
-	JUNK("쓰레기", 0xFFAAAAAA),
-	OTHER("기타", 0xFFFFFFFF);
+	FISH(com.seolwoni.assistcore.i18n.Tr.t("물고기"), 0xFF55FFFF),
+	TREASURE(com.seolwoni.assistcore.i18n.Tr.t("보물"), 0xFFFFAA00),
+	JUNK(com.seolwoni.assistcore.i18n.Tr.t("쓰레기"), 0xFFAAAAAA),
+	OTHER(com.seolwoni.assistcore.i18n.Tr.t("기타"), 0xFFFFFFFF);
 
 	public final String label;
 	public final int color;

@@ -22,12 +22,12 @@ public final class Goals {
 			changed = true;
 			String progress = g.label + " " + g.progress + "/" + g.target;
 			if (g.action == GoalEntry.ACTION_ALERT) {
-				Alerts.title("원하는 아이템!", progress, 0xFFFFAA00);
+				Alerts.title(com.seolwoni.assistcore.i18n.Tr.t("원하는 아이템!"), progress, 0xFFFFAA00);
 				Alerts.ding();
 			} else if (!g.reached && g.progress >= g.target) {
 				g.reached = true;
 				ReelConfig.save();
-				FishingController.stopMacro("목표 달성!", progress, true);
+				FishingController.stopMacro(com.seolwoni.assistcore.i18n.Tr.t("목표 달성!"), progress, true);
 				Alerts.ding();
 				return;
 			}
@@ -49,7 +49,7 @@ public final class Goals {
 		if (timerLeft < 0) timerLeft = (long) cfg.timerMinutes * 1200L;
 		if (--timerLeft <= 0) {
 			timerLeft = -1;
-			FishingController.stopMacro("타이머 종료", cfg.timerMinutes + "분이 지났어요", true);
+			FishingController.stopMacro(com.seolwoni.assistcore.i18n.Tr.t("타이머 종료"), cfg.timerMinutes + com.seolwoni.assistcore.i18n.Tr.t("분이 지났어요"), true);
 		}
 	}
 

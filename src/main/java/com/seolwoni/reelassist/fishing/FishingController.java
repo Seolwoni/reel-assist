@@ -26,10 +26,10 @@ import net.minecraft.world.item.Items;
  */
 public final class FishingController {
 	public static final String[] ROD_MODE_NAMES = {
-			"손에 있는 낚싯대",
-			"손에 있는 낚싯대 (파괴보호)",
-			"핫바 낚싯대 전부",
-			"핫바 낚싯대 전부 (파괴보호)"
+			com.seolwoni.assistcore.i18n.Tr.t("손에 있는 낚싯대"),
+			com.seolwoni.assistcore.i18n.Tr.t("손에 있는 낚싯대 (파괴보호)"),
+			com.seolwoni.assistcore.i18n.Tr.t("핫바 낚싯대 전부"),
+			com.seolwoni.assistcore.i18n.Tr.t("핫바 낚싯대 전부 (파괴보호)")
 	};
 
 	/** The game never lets a bite last less than 20 ticks; keep 3 ticks spare for lag. */
@@ -99,7 +99,7 @@ public final class FishingController {
 		if (hookAlive || cfg.macroEnabled) FishingStats.tickFishing();
 
 		if (cfg.macroEnabled && cfg.stopWhenRodRemoved && rodPutAway(player)) {
-			stopMacro("매크로 꺼짐", "낚싯대를 내려놨어요", false);
+			stopMacro(com.seolwoni.assistcore.i18n.Tr.t("매크로 꺼짐"), com.seolwoni.assistcore.i18n.Tr.t("낚싯대를 내려놨어요"), false);
 		}
 		if (cfg.macroEnabled) {
 			if (boxRun != null) {
@@ -197,7 +197,7 @@ public final class FishingController {
 				ReelConfig.save();
 				state = State.FISHING;
 				anchored = false;
-				Alerts.actionBar("매크로 자동 시작");
+				Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("매크로 자동 시작"));
 				Alerts.click();
 			}
 			ticksSinceCast = 0;
@@ -206,7 +206,7 @@ public final class FishingController {
 
 		if (biting && !wasBiting) {
 			ticksSinceBite = 0;
-			if (cfg.biteTitle) Alerts.title("입질!", "", 0xFFFFFF55);
+			if (cfg.biteTitle) Alerts.title(com.seolwoni.assistcore.i18n.Tr.t("입질!"), "", 0xFFFFFF55);
 			if (cfg.biteSound) Alerts.ding();
 		}
 		if (biting) {
@@ -312,7 +312,7 @@ public final class FishingController {
 		}
 		if (cfg.approachAlert && --approachMsgCooldown <= 0) {
 			approachMsgCooldown = 4;
-			Alerts.actionBar(String.format("물고기가 다가오는 중... %.1f칸", BobberFx.approachDistance()), 0xFFFFFF55);
+			Alerts.actionBar(String.format(com.seolwoni.assistcore.i18n.Tr.t("물고기가 다가오는 중... %.1f칸"), BobberFx.approachDistance()), 0xFFFFFF55);
 		}
 	}
 
@@ -350,8 +350,8 @@ public final class FishingController {
 					} else if (cfg.storeEnabled && ChestStorage.hasChest()) {
 						ChestStorage.start(mc, player);
 					} else {
-						stopMacro("인벤토리 가득 참!", cfg.storeEnabled && cfg.storeMode != com.seolwoni.assistcore.storage.PortableStorage.CHEST
-								? com.seolwoni.assistcore.storage.PortableStorage.whyNone(player, cfg.storeMode) : "매크로를 멈췄어요", cfg.fullInvAlert);
+						stopMacro(com.seolwoni.assistcore.i18n.Tr.t("인벤토리 가득 참!"), cfg.storeEnabled && cfg.storeMode != com.seolwoni.assistcore.storage.PortableStorage.CHEST
+								? com.seolwoni.assistcore.storage.PortableStorage.whyNone(player, cfg.storeMode) : com.seolwoni.assistcore.i18n.Tr.t("매크로를 멈췄어요"), cfg.fullInvAlert);
 					}
 					return;
 				}
@@ -383,9 +383,9 @@ public final class FishingController {
 					groundFails++;
 					if (groundFails >= 3) {
 						groundFails = 0;
-						stopMacro("찌가 물에 안 들어가요", "3번 연속 실패해서 멈췄어요", true);
+						stopMacro(com.seolwoni.assistcore.i18n.Tr.t("찌가 물에 안 들어가요"), com.seolwoni.assistcore.i18n.Tr.t("3번 연속 실패해서 멈췄어요"), true);
 					} else {
-						Alerts.actionBar("찌가 물에 안 들어가서 다시 던져요 (" + groundFails + "/3)", 0xFFFFAA00);
+						Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("찌가 물에 안 들어가서 다시 던져요 (") + groundFails + "/3)", 0xFFFFAA00);
 					}
 					return;
 				}
@@ -495,8 +495,8 @@ public final class FishingController {
 	public static void stopMacro(String title, String subtitle, boolean alert) {
 		lastStop = (title == null ? "" : title) + (subtitle == null ? "" : " / " + subtitle);
 		FishingStats fs = FishingStats.session;
-		com.seolwoni.assistcore.log.UsageLog.end("reel", title + (subtitle == null ? "" : " / " + subtitle), "던짐 " + fs.casts + ", 잡음 " + fs.totalCatches() + " (물고기 " + fs.categoryCount(LootCategory.FISH)
-				+ ", 보물 " + fs.categoryCount(LootCategory.TREASURE) + ", 쓰레기 " + fs.categoryCount(LootCategory.JUNK) + ")");
+		com.seolwoni.assistcore.log.UsageLog.end("reel", title + (subtitle == null ? "" : " / " + subtitle), com.seolwoni.assistcore.i18n.Tr.t("던짐 ") + fs.casts + com.seolwoni.assistcore.i18n.Tr.t(", 잡음 ") + fs.totalCatches() + com.seolwoni.assistcore.i18n.Tr.t(" (물고기 ") + fs.categoryCount(LootCategory.FISH)
+				+ com.seolwoni.assistcore.i18n.Tr.t(", 보물 ") + fs.categoryCount(LootCategory.TREASURE) + com.seolwoni.assistcore.i18n.Tr.t(", 쓰레기 ") + fs.categoryCount(LootCategory.JUNK) + ")");
 		ReelConfig cfg = ReelConfig.get();
 		cfg.macroEnabled = false;
 		ReelConfig.save();
@@ -534,9 +534,9 @@ public final class FishingController {
 
 	public static void onMacroToggled(boolean enabled) {
 		FishingStats fs = FishingStats.session;
-		if (enabled) com.seolwoni.assistcore.log.UsageLog.start("reel", "낚시 매크로 켬, 지금까지 잡은 수 " + fs.totalCatches());
-		else com.seolwoni.assistcore.log.UsageLog.end("reel", "직접 껐어요", "던짐 " + fs.casts + ", 잡음 " + fs.totalCatches() + " (물고기 " + fs.categoryCount(LootCategory.FISH)
-				+ ", 보물 " + fs.categoryCount(LootCategory.TREASURE) + ", 쓰레기 " + fs.categoryCount(LootCategory.JUNK) + ")");
+		if (enabled) com.seolwoni.assistcore.log.UsageLog.start("reel", com.seolwoni.assistcore.i18n.Tr.t("낚시 매크로 켬, 지금까지 잡은 수 ") + fs.totalCatches());
+		else com.seolwoni.assistcore.log.UsageLog.end("reel", com.seolwoni.assistcore.i18n.Tr.t("직접 껐어요"), com.seolwoni.assistcore.i18n.Tr.t("던짐 ") + fs.casts + com.seolwoni.assistcore.i18n.Tr.t(", 잡음 ") + fs.totalCatches() + com.seolwoni.assistcore.i18n.Tr.t(" (물고기 ") + fs.categoryCount(LootCategory.FISH)
+				+ com.seolwoni.assistcore.i18n.Tr.t(", 보물 ") + fs.categoryCount(LootCategory.TREASURE) + com.seolwoni.assistcore.i18n.Tr.t(", 쓰레기 ") + fs.categoryCount(LootCategory.JUNK) + ")");
 		state = State.IDLE;
 		anchored = false;
 	}
@@ -581,11 +581,11 @@ public final class FishingController {
 				}
 			}
 			if (!isRod(hand)) {
-				stopMacro("낚싯대가 없어요", "손에 낚싯대를 들어주세요", true);
+				stopMacro(com.seolwoni.assistcore.i18n.Tr.t("낚싯대가 없어요"), com.seolwoni.assistcore.i18n.Tr.t("손에 낚싯대를 들어주세요"), true);
 				return false;
 			}
 			if (protect && remaining(hand) <= limit) {
-				stopMacro("파괴보호", "낚싯대 내구도가 " + limit + " 이하예요", true);
+				stopMacro(com.seolwoni.assistcore.i18n.Tr.t("파괴보호"), com.seolwoni.assistcore.i18n.Tr.t("낚싯대 내구도가 ") + limit + com.seolwoni.assistcore.i18n.Tr.t(" 이하예요"), true);
 				return false;
 			}
 			return true;
@@ -605,8 +605,8 @@ public final class FishingController {
 			}
 		}
 		if (best == -1) {
-			stopMacro(protect ? "파괴보호" : "낚싯대 소진",
-					protect ? "쓸 수 있는 낚싯대가 없어요" : "핫바에 낚싯대가 없어요", true);
+			stopMacro(protect ? com.seolwoni.assistcore.i18n.Tr.t("파괴보호") : com.seolwoni.assistcore.i18n.Tr.t("낚싯대 소진"),
+					protect ? com.seolwoni.assistcore.i18n.Tr.t("쓸 수 있는 낚싯대가 없어요") : com.seolwoni.assistcore.i18n.Tr.t("핫바에 낚싯대가 없어요"), true);
 			return false;
 		}
 		if (inv.getSelectedSlot() != best) {
@@ -619,7 +619,7 @@ public final class FishingController {
 		ReelConfig cfg = ReelConfig.get();
 		cfg.rodMode = (cfg.rodMode + 1) % 4;
 		ReelConfig.save();
-		Alerts.actionBar("낚싯대 모드: " + ROD_MODE_NAMES[cfg.rodMode]);
+		Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("낚싯대 모드: ") + ROD_MODE_NAMES[cfg.rodMode]);
 		Alerts.click();
 	}
 
@@ -743,15 +743,15 @@ public final class FishingController {
 	// ------------------------------------------------------------------ HUD info
 
 	public static String stateLabel() {
-		if (!ReelConfig.get().macroEnabled) return "꺼짐";
+		if (!ReelConfig.get().macroEnabled) return com.seolwoni.assistcore.i18n.Tr.t("꺼짐");
 		if (boxRun != null) return boxRun.label();
 		if (ChestStorage.active()) return ChestStorage.label();
 		if (AutoEat.active()) return AutoEat.label();
 		if (Housekeeping.active()) return Housekeeping.label();
 		return switch (state) {
-			case IDLE, CAST_WAIT -> "던지는 중";
-			case FISHING -> "기다리는 중";
-			case REEL_WAIT -> "당기는 중";
+			case IDLE, CAST_WAIT -> com.seolwoni.assistcore.i18n.Tr.t("던지는 중");
+			case FISHING -> com.seolwoni.assistcore.i18n.Tr.t("기다리는 중");
+			case REEL_WAIT -> com.seolwoni.assistcore.i18n.Tr.t("당기는 중");
 		};
 	}
 }

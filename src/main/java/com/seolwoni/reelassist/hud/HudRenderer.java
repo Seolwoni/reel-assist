@@ -127,7 +127,7 @@ public final class HudRenderer {
 		long totalCatches = st.totalCatches();
 
 		out.add(List.of(new Seg("Reel Assist ", GOLD),
-				new Seg(cfg.showTotals ? "(누적)" : "(이번 세션)", GRAY)));
+				new Seg(cfg.showTotals ? com.seolwoni.assistcore.i18n.Tr.t("(누적)") : com.seolwoni.assistcore.i18n.Tr.t("(이번 세션)"), GRAY)));
 
 		long now = System.currentTimeMillis();
 		for (LootCategory cat : LootCategory.values()) {
@@ -153,15 +153,15 @@ public final class HudRenderer {
 		}
 
 		for (com.seolwoni.reelassist.config.GoalEntry goal : cfg.goals) {
-			out.add(List.of(new Seg("목표 ", 0xFFFF55FF), new Seg(goal.label + " ", WHITE),
+			out.add(List.of(new Seg(com.seolwoni.assistcore.i18n.Tr.t("목표 "), 0xFFFF55FF), new Seg(goal.label + " ", WHITE),
 					new Seg(goal.progress + "/" + goal.target, goal.reached ? GREEN : GRAY)));
 		}
 		double hours = st.fishingTicks / 20.0 / 3600.0;
 		long perHour = hours > 0.01 ? Math.round(totalCatches / hours) : 0;
-		out.add(List.of(new Seg("총 캐스팅: ", GOLD), new Seg(st.casts + "", WHITE)));
-		out.add(List.of(new Seg("총 획득: ", GOLD), new Seg(totalCatches + "", WHITE),
-				new Seg(" [" + perHour + "/시간]", GRAY)));
-		out.add(List.of(new Seg("낚시 시간: ", GOLD), new Seg(duration(st.fishingTicks / 20), WHITE)));
+		out.add(List.of(new Seg(com.seolwoni.assistcore.i18n.Tr.t("총 캐스팅: "), GOLD), new Seg(st.casts + "", WHITE)));
+		out.add(List.of(new Seg(com.seolwoni.assistcore.i18n.Tr.t("총 획득: "), GOLD), new Seg(totalCatches + "", WHITE),
+				new Seg(" [" + perHour + com.seolwoni.assistcore.i18n.Tr.t("/시간]"), GRAY)));
+		out.add(List.of(new Seg(com.seolwoni.assistcore.i18n.Tr.t("낚시 시간: "), GOLD), new Seg(duration(st.fishingTicks / 20), WHITE)));
 		return out;
 	}
 
@@ -170,30 +170,30 @@ public final class HudRenderer {
 		Minecraft mc = Minecraft.getInstance();
 		List<List<Seg>> out = new ArrayList<>();
 		boolean on = cfg.macroEnabled;
-		out.add(List.of(new Seg("매크로: ", GOLD),
+		out.add(List.of(new Seg(com.seolwoni.assistcore.i18n.Tr.t("매크로: "), GOLD),
 				new Seg(FishingController.stateLabel(), on ? GREEN : RED)));
 		List<Seg> rod = new ArrayList<>();
-		rod.add(new Seg("모드: ", GOLD));
+		rod.add(new Seg(com.seolwoni.assistcore.i18n.Tr.t("모드: "), GOLD));
 		rod.add(new Seg(FishingController.ROD_MODE_NAMES[cfg.rodMode], WHITE));
 		if (mc.player != null) {
 			ItemStack hand = mc.player.getMainHandItem();
 			if (hand.is(Items.FISHING_ROD) && hand.isDamageableItem()) {
 				int r = FishingController.remaining(hand);
-				rod.add(new Seg("  내구도 " + r + "/" + hand.getMaxDamage(), r <= cfg.protectDurability ? RED : GRAY));
+				rod.add(new Seg(com.seolwoni.assistcore.i18n.Tr.t("  내구도 ") + r + "/" + hand.getMaxDamage(), r <= cfg.protectDurability ? RED : GRAY));
 			}
 		}
 		out.add(rod);
 		long timer = com.seolwoni.reelassist.fishing.Goals.timerSecondsLeft();
 		if (timer >= 0) {
-			out.add(List.of(new Seg("타이머 ", GOLD), new Seg(com.seolwoni.reelassist.fishing.Goals.formatTime(timer), WHITE)));
+			out.add(List.of(new Seg(com.seolwoni.assistcore.i18n.Tr.t("타이머 "), GOLD), new Seg(com.seolwoni.reelassist.fishing.Goals.formatTime(timer), WHITE)));
 		}
 		Boolean open = com.seolwoni.reelassist.fishing.OpenWater.bobber();
 		if (open != null) {
-			out.add(List.of(new Seg("물: ", GOLD), open ? new Seg("트인 물 (보물 가능)", GREEN) : new Seg("좁은 물 (보물 안 나와요)", 0xFFFFAA00)));
+			out.add(List.of(new Seg(com.seolwoni.assistcore.i18n.Tr.t("물: "), GOLD), open ? new Seg(com.seolwoni.assistcore.i18n.Tr.t("트인 물 (보물 가능)"), GREEN) : new Seg(com.seolwoni.assistcore.i18n.Tr.t("좁은 물 (보물 안 나와요)"), 0xFFFFAA00)));
 		}
 				if (BobberFx.isApproaching()) {
-			out.add(List.of(new Seg("물고기 접근 ", 0xFFFFFF55),
-					new Seg(String.format("%.1f칸", BobberFx.approachDistance()), WHITE)));
+			out.add(List.of(new Seg(com.seolwoni.assistcore.i18n.Tr.t("물고기 접근 "), 0xFFFFFF55),
+					new Seg(String.format(com.seolwoni.assistcore.i18n.Tr.t("%.1f칸"), BobberFx.approachDistance()), WHITE)));
 		}
 		return out;
 	}

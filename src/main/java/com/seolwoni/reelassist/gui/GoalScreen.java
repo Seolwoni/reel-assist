@@ -21,7 +21,7 @@ public class GoalScreen extends Screen {
 	private final List<Object[]> labels = new ArrayList<>();
 
 	public GoalScreen(Screen parent) {
-		super(Component.literal("목표 아이템"));
+		super(Component.literal(com.seolwoni.assistcore.i18n.Tr.t("목표 아이템")));
 		this.parent = parent;
 	}
 
@@ -39,7 +39,7 @@ public class GoalScreen extends Screen {
 		page = Math.max(0, Math.min(page, pages - 1));
 
 		if (goals.isEmpty()) {
-			labels.add(new Object[] {"아직 목표가 없어요. 아래 '추가'를 눌러주세요.", cx, y + 6, 0xFFAAAAAA, true});
+			labels.add(new Object[] {com.seolwoni.assistcore.i18n.Tr.t("아직 목표가 없어요. 아래 '추가'를 눌러주세요."), cx, y + 6, 0xFFAAAAAA, true});
 		}
 		int start = page * perPage;
 		for (int i = start; i < Math.min(goals.size(), start + perPage); i++) {
@@ -66,7 +66,7 @@ public class GoalScreen extends Screen {
 				Goals.resetProgress(g);
 				rebuildWidgets();
 			}).bounds(cx + 86, y, 20, 20).build());
-			addRenderableWidget(Button.builder(Component.literal("삭제"), b -> {
+			addRenderableWidget(Button.builder(Component.literal(com.seolwoni.assistcore.i18n.Tr.t("삭제")), b -> {
 				goals.remove(g);
 				ReelConfig.save();
 				rebuildWidgets();
@@ -90,13 +90,13 @@ public class GoalScreen extends Screen {
 			addRenderableWidget(next);
 			labels.add(new Object[] {(page + 1) + "/" + pages, cx - 122, by + 6, 0xFFFFFFFF, true});
 		}
-		addRenderableWidget(Button.builder(Component.literal("목표 추가"), b ->
+		addRenderableWidget(Button.builder(Component.literal(com.seolwoni.assistcore.i18n.Tr.t("목표 추가")), b ->
 				this.minecraft.gui.setScreen(new GoalPickerScreen(this))).bounds(cx - 80, by, 100, 20).build());
-		addRenderableWidget(Button.builder(Component.literal("전체 진행 초기화"), b -> {
+		addRenderableWidget(Button.builder(Component.literal(com.seolwoni.assistcore.i18n.Tr.t("전체 진행 초기화")), b -> {
 			for (GoalEntry g : goals) Goals.resetProgress(g);
 			rebuildWidgets();
 		}).bounds(cx + 25, by, 130, 20).build());
-		addRenderableWidget(Button.builder(Component.literal("완료"), b -> onClose())
+		addRenderableWidget(Button.builder(Component.literal(com.seolwoni.assistcore.i18n.Tr.t("완료")), b -> onClose())
 				.bounds(cx - 75, this.height - 26, 150, 20).build());
 	}
 
@@ -110,8 +110,8 @@ public class GoalScreen extends Screen {
 
 	private static Component actionText(GoalEntry g) {
 		return g.action == GoalEntry.ACTION_STOP
-				? Component.literal("정지").withColor(0xFFFF7777)
-				: Component.literal("알림만").withColor(0xFF77DDFF);
+				? Component.literal(com.seolwoni.assistcore.i18n.Tr.t("정지")).withColor(0xFFFF7777)
+				: Component.literal(com.seolwoni.assistcore.i18n.Tr.t("알림만")).withColor(0xFF77DDFF);
 	}
 
 	private String trim(String s, int maxW) {

@@ -26,7 +26,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 
 /** Pick a goal: fishing loot grid, enchanted book by enchantment, item search, or name text. */
 public class GoalPickerScreen extends Screen {
-	private static final String[] MODES = {"낚시 아이템", "마법 책", "아이템 검색", "이름으로"};
+	private static final String[] MODES = {com.seolwoni.assistcore.i18n.Tr.t("낚시 아이템"), com.seolwoni.assistcore.i18n.Tr.t("마법 책"), com.seolwoni.assistcore.i18n.Tr.t("아이템 검색"), com.seolwoni.assistcore.i18n.Tr.t("이름으로")};
 	private static final String[] ROMAN = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
 	private static int mode = 0;
 	private static int page = 0;
@@ -41,7 +41,7 @@ public class GoalPickerScreen extends Screen {
 	}
 
 	public GoalPickerScreen(Screen parent) {
-		super(Component.literal("목표 추가"));
+		super(Component.literal(com.seolwoni.assistcore.i18n.Tr.t("목표 추가")));
 		this.parent = parent;
 	}
 
@@ -74,7 +74,7 @@ public class GoalPickerScreen extends Screen {
 			}
 		}
 
-		addRenderableWidget(Button.builder(Component.literal("뒤로"), b -> onClose())
+		addRenderableWidget(Button.builder(Component.literal(com.seolwoni.assistcore.i18n.Tr.t("뒤로")), b -> onClose())
 				.bounds(cx - 75, this.height - 26, 150, 20).build());
 	}
 
@@ -92,15 +92,15 @@ public class GoalPickerScreen extends Screen {
 			addRenderableWidget(b);
 			icons.add(new Icon(stack, x + 4, yy + 4));
 		}
-		note("아이콘을 눌러 목표로 추가해요. 마법 책의 마법은 '마법 책' 탭에서 골라요.", y + 64);
+		note(com.seolwoni.assistcore.i18n.Tr.t("아이콘을 눌러 목표로 추가해요. 마법 책의 마법은 '마법 책' 탭에서 골라요."), y + 64);
 	}
 
 	private void buildBooks(int left, int y) {
-		addRenderableWidget(Button.builder(Component.literal("아무 마법 책"), b -> addBookGoal("", 0, "마법 책 (아무거나)"))
+		addRenderableWidget(Button.builder(Component.literal(com.seolwoni.assistcore.i18n.Tr.t("아무 마법 책")), b -> addBookGoal("", 0, com.seolwoni.assistcore.i18n.Tr.t("마법 책 (아무거나)")))
 				.bounds(left, y, 310, 20).build());
 		y += 24;
 		if (this.minecraft.level == null) {
-			note("월드에 들어가 있어야 마법 목록을 불러올 수 있어요.", y + 6);
+			note(com.seolwoni.assistcore.i18n.Tr.t("월드에 들어가 있어야 마법 목록을 불러올 수 있어요."), y + 6);
 			return;
 		}
 		List<Holder<Enchantment>> list = new ArrayList<>();
@@ -117,7 +117,7 @@ public class GoalPickerScreen extends Screen {
 			int max = Math.min(10, h.value().getMaxLevel());
 			labels.add(new Object[] {name, left, y + 6, 0xFFFFFFFF, false});
 			int bx = left + 120;
-			addRenderableWidget(Button.builder(Component.literal("아무"), b -> addBookGoal(id, 0, name))
+			addRenderableWidget(Button.builder(Component.literal(com.seolwoni.assistcore.i18n.Tr.t("아무")), b -> addBookGoal(id, 0, name))
 					.bounds(bx, y, 32, 20).build());
 			bx += 34;
 			for (int lv = 1; lv <= max; lv++) {
@@ -132,7 +132,7 @@ public class GoalPickerScreen extends Screen {
 	}
 
 	private void buildSearch(int left, int y) {
-		EditBox box = new EditBox(this.font, left, y, 310, 20, Component.literal("검색"));
+		EditBox box = new EditBox(this.font, left, y, 310, 20, Component.literal(com.seolwoni.assistcore.i18n.Tr.t("검색")));
 		box.setMaxLength(50);
 		box.setValue(query);
 		box.setResponder(s -> {
@@ -148,7 +148,7 @@ public class GoalPickerScreen extends Screen {
 
 		String q = query.trim().toLowerCase(Locale.ROOT);
 		if (q.isEmpty()) {
-			note("아이템 이름을 입력하세요 (예: 이름표, 안장)", y + 6);
+			note(com.seolwoni.assistcore.i18n.Tr.t("아이템 이름을 입력하세요 (예: 이름표, 안장)"), y + 6);
 			return;
 		}
 		List<Item> found = new ArrayList<>();
@@ -160,7 +160,7 @@ public class GoalPickerScreen extends Screen {
 			if (name.contains(q) || id.contains(q)) found.add(item);
 		}
 		if (found.isEmpty()) {
-			note("찾는 아이템이 없어요.", y + 6);
+			note(com.seolwoni.assistcore.i18n.Tr.t("찾는 아이템이 없어요."), y + 6);
 			return;
 		}
 		int perPage = Math.max(1, (this.height - y - 60) / 22) * 2;
@@ -180,21 +180,21 @@ public class GoalPickerScreen extends Screen {
 	}
 
 	private void buildName(int left, int y) {
-		EditBox box = new EditBox(this.font, left, y, 230, 20, Component.literal("이름"));
+		EditBox box = new EditBox(this.font, left, y, 230, 20, Component.literal(com.seolwoni.assistcore.i18n.Tr.t("이름")));
 		box.setMaxLength(60);
 		addRenderableWidget(box);
 		setInitialFocus(box);
-		addRenderableWidget(Button.builder(Component.literal("추가"), b -> {
+		addRenderableWidget(Button.builder(Component.literal(com.seolwoni.assistcore.i18n.Tr.t("추가")), b -> {
 			String t = box.getValue().trim();
 			if (t.isEmpty()) return;
 			GoalEntry g = new GoalEntry();
 			g.kind = GoalEntry.NAME;
 			g.text = t;
-			g.label = "이름에 '" + t + "'";
+			g.label = com.seolwoni.assistcore.i18n.Tr.t("이름에 '") + t + "'";
 			add(g);
 		}).bounds(left + 236, y, 74, 20).build());
-		note("서버 커스텀 아이템처럼 아직 가져본 적 없는 아이템용이에요.", y + 32);
-		note("입력한 글자가 이름에 들어간 아이템이 낚이면 목표로 쳐요.", y + 44);
+		note(com.seolwoni.assistcore.i18n.Tr.t("서버 커스텀 아이템처럼 아직 가져본 적 없는 아이템용이에요."), y + 32);
+		note(com.seolwoni.assistcore.i18n.Tr.t("입력한 글자가 이름에 들어간 아이템이 낚이면 목표로 쳐요."), y + 44);
 	}
 
 	// ------------------------------------------------------------------ helpers

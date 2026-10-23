@@ -53,9 +53,9 @@ public final class Housekeeping {
 
 	public static String label() {
 		return switch (job) {
-			case COMBINE -> "낚싯대 합치는 중";
-			case SUPPLY -> "보급 중";
-			case SORT -> "정리 중";
+			case COMBINE -> com.seolwoni.assistcore.i18n.Tr.t("낚싯대 합치는 중");
+			case SUPPLY -> com.seolwoni.assistcore.i18n.Tr.t("보급 중");
+			case SORT -> com.seolwoni.assistcore.i18n.Tr.t("정리 중");
 			default -> "";
 		};
 	}
@@ -135,7 +135,7 @@ public final class Housekeeping {
 					int merged = sorter == null ? 0 : sorter.merges;
 					sorter = null;
 					job = Job.NONE;
-					Alerts.actionBar("인벤토리 정리 완료" + (merged > 0 ? " (" + merged + "번 합침)" : ""), 0xFF55FF55);
+					Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("인벤토리 정리 완료") + (merged > 0 ? " (" + merged + com.seolwoni.assistcore.i18n.Tr.t("번 합침)") : ""), 0xFF55FF55);
 					return;
 				}
 				timer = fastDelay();
@@ -221,7 +221,7 @@ public final class Housekeeping {
 		});
 		queue.add(() -> {
 			if (!player.inventoryMenu.getSlot(CRAFT_2).getItem().isEmpty()) click(mc, player, CRAFT_2, ContainerInput.QUICK_MOVE);
-			Alerts.actionBar("낡은 낚싯대를 합쳤어요", 0xFF55FF55);
+			Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("낡은 낚싯대를 합쳤어요"), 0xFF55FF55);
 		});
 		return true;
 	}

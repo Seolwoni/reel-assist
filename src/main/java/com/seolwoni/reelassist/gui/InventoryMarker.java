@@ -72,7 +72,7 @@ public final class InventoryMarker {
 			if (g.kind == GoalEntry.EXACT && g.exact != null && g.exact.sameIdentity(stack)) {
 				cfg.goals.remove(g);
 				ReelConfig.save();
-				Alerts.actionBar("목표에서 제거: " + name);
+				Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("목표에서 제거: ") + name);
 				Alerts.click();
 				return;
 			}
@@ -83,7 +83,7 @@ public final class InventoryMarker {
 		g.label = name;
 		cfg.goals.add(g);
 		ReelConfig.save();
-		Alerts.actionBar("목표에 추가: " + name + " (설정 → 목표에서 개수 지정)", 0xFFFF55FF);
+		Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("목표에 추가: ") + name + com.seolwoni.assistcore.i18n.Tr.t(" (설정 → 목표에서 개수 지정)"), 0xFFFF55FF);
 		Alerts.click();
 	}
 
@@ -99,10 +99,10 @@ public final class InventoryMarker {
 		String name = stack.getHoverName().getString();
 		if (existing != null) {
 			cfg.discardEntries.remove(existing);
-			Alerts.actionBar("버리기 목록에서 제거: " + name);
+			Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("버리기 목록에서 제거: ") + name);
 		} else {
 			cfg.discardEntries.add(DiscardEntry.of(stack, cfg.defaultMatchMode));
-			Alerts.actionBar("버리기 목록에 추가: " + name);
+			Alerts.actionBar(com.seolwoni.assistcore.i18n.Tr.t("버리기 목록에 추가: ") + name);
 		}
 		Alerts.click();
 		ReelConfig.save();
