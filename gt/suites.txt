@@ -1,0 +1,8 @@
+flat: success
+real-ocean: success
+real-river: success
+real-swamp: success
+real-ocean-rain: success
+real-river-night: success
+real-swamp-full: success
+real-ocean-protect: success
