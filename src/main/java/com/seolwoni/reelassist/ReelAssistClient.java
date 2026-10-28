@@ -49,7 +49,7 @@ public class ReelAssistClient implements ClientModInitializer {
 				"key.reelassist.mark_chest", InputConstants.Type.KEYBOARD, com.mojang.blaze3d.platform.InputConstants.KEY_K, category));
 
 		markGoalKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-				"key.reelassist.mark_goal", InputConstants.Type.KEYBOARD, com.mojang.blaze3d.platform.InputConstants.KEY_UNKNOWN, category));
+				"key.reelassist.mark_goal", InputConstants.Type.KEYBOARD, com.mojang.blaze3d.platform.InputConstants.UNKNOWN.getValue(), category));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (markChestKey.consumeClick()) {

@@ -75,12 +75,12 @@ public final class BobberFx {
 	/** Called on the main thread for every particle packet. */
 	public static void onParticle(ClientboundLevelParticlesPacket packet) {
 		if (!ReelConfig.get().modEnabled) return;
-		if (packet.getParticle().getType() != ParticleTypes.FISHING) return;
+		if (packet.particle().getType() != ParticleTypes.FISHING) return;
 		FishingHook hook = ownHook();
 		if (hook == null || biting) return;
-		double dx = packet.getX() - hook.getX();
-		double dz = packet.getZ() - hook.getZ();
-		double dy = packet.getY() - hook.getY();
+		double dx = packet.x() - hook.getX();
+		double dz = packet.z() - hook.getZ();
+		double dy = packet.y() - hook.getY();
 		double horizontal = Math.sqrt(dx * dx + dz * dz);
 		if (horizontal > APPROACH_RADIUS || Math.abs(dy) > 2.5) return;
 		// Particles right on the bobber are the bite splash itself, not the approach.
