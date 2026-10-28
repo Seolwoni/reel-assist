@@ -1,6 +1,5 @@
 package com.seolwoni.reelassist;
 
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,13 +43,13 @@ public class ReelAssistClient implements ClientModInitializer {
 
 		KeyMapping.Category category = KeyMapping.Category.register(id("main"));
 		markDiscardKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-				"key.reelassist.mark_discard", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_DELETE, category));
+				"key.reelassist.mark_discard", InputConstants.Type.KEYBOARD, com.mojang.blaze3d.platform.InputConstants.KEY_DELETE, category));
 
 		markChestKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-				"key.reelassist.mark_chest", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, category));
+				"key.reelassist.mark_chest", InputConstants.Type.KEYBOARD, com.mojang.blaze3d.platform.InputConstants.KEY_K, category));
 
 		markGoalKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-				"key.reelassist.mark_goal", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, category));
+				"key.reelassist.mark_goal", InputConstants.Type.KEYBOARD, com.mojang.blaze3d.platform.InputConstants.KEY_UNKNOWN, category));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (markChestKey.consumeClick()) {

@@ -132,7 +132,7 @@ public final class ChestStorage {
 				if (hookAlive) {
 					if (--timer > 0) return;
 					mc.gameMode.useItem(player, InteractionHand.MAIN_HAND);
-					player.swing(InteractionHand.MAIN_HAND);
+					com.seolwoni.assistcore.util.Compat.swing(player, InteractionHand.MAIN_HAND);
 					timer = FishingController.delay(3, 8);
 					return;
 				}
@@ -154,7 +154,7 @@ public final class ChestStorage {
 				Direction face = faceToward(player.getEyePosition(), center);
 				Vec3 hitVec = center.add(face.getStepX() * 0.5, face.getStepY() * 0.5, face.getStepZ() * 0.5);
 				mc.gameMode.useItemOn(player, InteractionHand.MAIN_HAND, new BlockHitResult(hitVec, face, pos, false));
-				player.swing(InteractionHand.MAIN_HAND);
+				com.seolwoni.assistcore.util.Compat.swing(player, InteractionHand.MAIN_HAND);
 				waitTicks = 40;
 				step = Step.WAIT_OPEN;
 			}

@@ -455,7 +455,7 @@ public final class FishingController {
 
 	private static void use(Minecraft mc, LocalPlayer player) {
 		mc.gameMode.useItem(player, InteractionHand.MAIN_HAND);
-		player.swing(InteractionHand.MAIN_HAND);
+		com.seolwoni.assistcore.util.Compat.swing(player, InteractionHand.MAIN_HAND);
 	}
 
 	/**
